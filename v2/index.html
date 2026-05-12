@@ -535,7 +535,8 @@
             <a href="#taxonomy" class="toc-link">Taxonomy</a>
             <a href="#test-videos" class="toc-link">Test Video Tags</a>
             <a href="#rotation" class="toc-link new">↻ Rotation Behavior</a>
-            <a href="#pinned" class="toc-link new">📌 Pinned Video</a>
+            <a href="#options" class="toc-link new">Thank You Options</a>
+            <a href="#js-random" class="toc-link new">⚡ JS Randomization</a>
             <a href="#thankyou" class="toc-link">Thank You Page</a>
             <a href="#videohub" class="toc-link">Video Hub Filtering</a>
             <a href="#embeds" class="toc-link">Embed Types</a>
@@ -712,115 +713,173 @@
 
     <hr class="divider">
 
-    <!-- Section 3: Rotation Behavior (NEW) -->
+    <!-- Section 3: Rotation Behavior — Corrected (NEW) -->
     <div class="page-section" id="rotation">
-        <span class="section-label new">New — Yuki's Question</span>
+        <span class="section-label new">Updated — Yuki's Question</span>
         <h2 class="section-title">Rotation Behavior: Same Hashtags, Multiple Videos</h2>
         <p class="section-description">
             <strong>Question from Yuki:</strong> If multiple videos share the same hashtags and we embed a 
             StoryBlock with <code>max_videos="1"</code>, will it always show the same video?
         </p>
 
-        <div class="callout success">
-            <strong>Answer (confirmed by Spencer):</strong> StoryBlock auto-rotates sequentially. 
-            When multiple videos match the same hashtag filter, the embed cycles through them 
-            in order — Video C first, then Video D on the next display, then back to C.
-            It does NOT always show the same video.
+        <div class="callout">
+            <strong>Answer (confirmed via Firework docs + testing):</strong> Yes — with <code>max_videos="1"</code>, 
+            StoryBlock always shows the <strong>most recently uploaded</strong> matching video, and it stays 
+            the same across page loads. The "sequential rotation" only happens <strong>within a single viewing 
+            session</strong> after the current video finishes playing, not between page loads.
         </div>
+
+        <h3 style="margin-bottom: 10px;">What this means</h3>
+
+        <table class="dimension-table" style="margin-bottom: 24px;">
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Behavior</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>max_videos="1"</code></td>
+                    <td>Always shows the same (most recent) video on every page load. No rotation between visits.</td>
+                </tr>
+                <tr>
+                    <td><code>max_videos="3"</code></td>
+                    <td>Loads 3 videos. Starts with the most recent, then auto-advances to the next after each finishes playing.</td>
+                </tr>
+                <tr>
+                    <td>Page reload / new visit</td>
+                    <td>Resets to the same starting video. No built-in randomization across page loads.</td>
+                </tr>
+                <tr>
+                    <td><code>sort_order="random"</code></td>
+                    <td>Does not exist. There is no built-in attribute for randomizing video order on load.</td>
+                </tr>
+            </tbody>
+        </table>
 
         <p class="section-description">
-            Below: a live StoryBlock filtering for <code>(and he tv bravia-3 video setup)</code> with 
-            <code>max_videos="1"</code>. Two videos match (C &amp; D). Click the reload button to 
-            destroy and re-create the embed — you should see it cycle between the two setup videos.
+            Below: a live StoryBlock with <code>max_videos="1"</code>. No matter how many times you reload, 
+            it shows the same video (the most recently uploaded one matching the filter).
         </p>
 
-        <div class="tech-note">
-            <span class="comment">/* Two videos match this filter: Video C and Video D */</span><br>
-            <span class="tag">&lt;fw-storyblock</span>
-            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
-            <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
-        </div>
-
-        <button class="reload-btn" onclick="reloadRotationDemo()">
-            ↻ Reload embed to test rotation
-        </button>
-        <span class="reload-counter" id="reload-count">Reloaded: 0 times</span>
-
-        <div class="embed-container live" id="rotation-demo-container">
-            <div class="embed-label">Live StoryBlock — sequential rotation (2 matching videos)</div>
+        <div class="embed-container live">
+            <div class="embed-label">StoryBlock with max_videos="1" — always the same video on load</div>
             <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
                 max_videos="1"></fw-storyblock>
         </div>
 
-        <div class="callout">
-            <strong>What to look for:</strong> Each time you reload, the embed should show a different 
-            one of the two 0:59 setup videos. If you see the same video twice in a row, try a third 
-            reload — the rotation is sequential, so it depends on where in the cycle you are.
+        <p class="section-description" style="margin-top: 20px;">
+            And here with <code>max_videos="3"</code>. It starts the same, but if you let the first video 
+            finish playing, it auto-advances to the next one. Try watching it through.
+        </p>
+
+        <div class="embed-container live">
+            <div class="embed-label">StoryBlock with max_videos="3" — auto-advances after each video finishes</div>
+            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video)"
+                max_videos="3"></fw-storyblock>
         </div>
     </div>
 
     <hr class="divider">
 
-    <!-- Section 4: Pinned Video (NEW) -->
-    <div class="page-section" id="pinned">
-        <span class="section-label new">New — Option Comparison</span>
-        <h2 class="section-title">Pinned vs Rotating: Thank You Page Options</h2>
+    <!-- Section 4: Thank You Page Options (NEW) -->
+    <div class="page-section" id="options">
+        <span class="section-label new">Thank You Page Options</span>
+        <h2 class="section-title">Three Approaches for Post-Registration Video</h2>
         <p class="section-description">
-            For the Thank You page, we have two approaches. Both are shown live below 
-            so Yuki and Tomo can compare.
+            Given the rotation findings, here are three approaches for the Thank You page. 
+            All shown live below for comparison.
         </p>
 
-        <div class="layout-grid">
-            <!-- Option A: Rotation -->
+        <div class="layout-grid" style="grid-template-columns: 1fr; gap: 20px;">
+            <!-- Option A: Auto-advance -->
             <div class="scenario-box">
-                <span class="scenario-label option-a">Option A — Rotation</span>
-                <h4>Let it rotate (recommended)</h4>
+                <span class="scenario-label option-a">Option A — Auto-Advance Playlist</span>
+                <h4>Show multiple videos, auto-advance after each finishes</h4>
                 <p class="scenario-desc">
-                    Keep the broad hashtag filter. Each time a customer finishes registration, 
-                    they see a different setup video. Fresh content on repeat visits.
+                    Use <code>max_videos="3"</code> or higher. Customer sees the first setup video, 
+                    and if they keep watching, it plays through the others automatically. 
+                    Simple, no custom code needed.
                 </p>
                 <div class="tech-note">
-                    <span class="tag">&lt;fw-storyblock</span><br>
-                    &nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
-                    &nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
-                    <span class="tag">&gt;</span>
+                    <span class="tag">&lt;fw-storyblock</span>
+                    <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"3"</span>
+                    <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
                 </div>
                 <div class="embed-container live">
-                    <div class="embed-label">Option A: Rotating StoryBlock</div>
+                    <div class="embed-label">Option A: Auto-advance (max_videos="3")</div>
                     <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
-                        max_videos="1"></fw-storyblock>
+                        max_videos="3"></fw-storyblock>
                 </div>
                 <div class="callout info" style="margin-bottom:0">
-                    <strong>Pros:</strong> Content stays fresh. No need to update embed code when new setup videos are added — they automatically enter the rotation.<br>
-                    <strong>Cons:</strong> Can't guarantee which specific video a customer sees first.
+                    <strong>Pros:</strong> Zero custom code. Customer can watch multiple videos in one session.<br>
+                    <strong>Cons:</strong> Always starts with the same video on every visit. First impression doesn't vary.
                 </div>
             </div>
 
             <!-- Option B: Pinned -->
             <div class="scenario-box">
-                <span class="scenario-label option-b">Option B — Pinned</span>
-                <h4>Pin a specific video</h4>
+                <span class="scenario-label option-b">Option B — Pinned Single Video</span>
+                <h4>Always show one specific video</h4>
                 <p class="scenario-desc">
-                    Narrow the hashtag filter by adding D4 (SKU) or D6 (content type) to target 
-                    a single video. Or use a Firework content ID to pin exactly one.
+                    Narrow the hashtag filter to match only one video (e.g., add D6=tutorial 
+                    to target the 4:24 video). Full control, always predictable.
                 </p>
                 <div class="tech-note">
-                    <span class="comment">/* Add more hashtags to narrow to 1 match */</span><br>
-                    <span class="tag">&lt;fw-storyblock</span><br>
-                    &nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video tutorial)"</span><br>
-                    &nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
-                    <span class="tag">&gt;</span>
+                    <span class="tag">&lt;fw-storyblock</span>
+                    <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video tutorial)"</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
+                    <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
                 </div>
                 <div class="embed-container live">
-                    <div class="embed-label">Option B: Pinned StoryBlock (only 1 tutorial video matches)</div>
+                    <div class="embed-label">Option B: Pinned (only 1 tutorial video matches)</div>
                     <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video tutorial)"
                         max_videos="1"></fw-storyblock>
                 </div>
                 <div class="callout" style="margin-bottom:0">
-                    <strong>Pros:</strong> Full control over which video shows. Consistent experience.<br>
-                    <strong>Cons:</strong> Need to update the hashtag filter (or content ID) if you want to change the video. New videos don't appear automatically.
+                    <strong>Pros:</strong> Full control. Consistent, predictable experience.<br>
+                    <strong>Cons:</strong> Manual update needed to change the video. No variety for repeat visitors.
+                </div>
+            </div>
+
+            <!-- Option C: JS Randomization -->
+            <div class="scenario-box" style="border-color: #4ade80;">
+                <span class="scenario-label option-c">Option C — JS Randomization (Recommended)</span>
+                <h4>Randomize on each page load via JavaScript</h4>
+                <p class="scenario-desc">
+                    React picks a random content type (setup, feature, tutorial) on each page load 
+                    and passes it to the StoryBlock. Different customers see different videos. 
+                    No taxonomy hacks needed — the randomization lives in the application logic.
+                </p>
+                <div class="tech-note">
+                    <span class="comment">/* JavaScript picks a random D6 on each load */</span><br>
+                    <span class="comment">/* This is what Liam would implement in React */</span><br><br>
+                    <span class="attr">const</span> contentTypes = [<span class="val">'setup'</span>, <span class="val">'feature'</span>, <span class="val">'tutorial'</span>];<br>
+                    <span class="attr">const</span> pick = contentTypes[Math.floor(Math.random() * contentTypes.length)];<br>
+                    <span class="attr">const</span> hashtag = <span class="val">`(and he tv bravia-3 video ${pick})`</span>;<br><br>
+                    <span class="comment">/* Then set it on the embed */</span><br>
+                    storyblock.setAttribute(<span class="val">'hashtag'</span>, hashtag);
+                </div>
+                <div class="embed-container live" id="random-demo-container">
+                    <div class="embed-label" id="random-demo-label">Option C: Loading...</div>
+                    <!-- JS will create the embed dynamically -->
+                </div>
+                <button class="reload-btn" onclick="randomizeVideo()">
+                    ↻ Randomize again (simulates new page load)
+                </button>
+                <span class="reload-counter" id="random-count">Randomized: 0 times</span>
+                <div class="hashtag-display" style="margin-top: 12px;">
+                    <span class="label">Current filter:</span>
+                    <span class="expression" id="random-current-filter">loading...</span>
+                </div>
+                <div class="callout success" style="margin-bottom:0">
+                    <strong>Pros:</strong> Fresh content on every visit. No Firework workarounds needed. 
+                    Clean taxonomy. New videos automatically included when tagged.<br>
+                    <strong>Cons:</strong> Small amount of React code needed (5 lines). Liam handles this during build.
                 </div>
             </div>
         </div>
@@ -828,23 +887,60 @@
 
     <hr class="divider">
 
-    <!-- Section 5: Thank You Page Demo (original, updated) -->
-    <div class="page-section" id="thankyou">
-        <span class="section-label">Thank You Page</span>
-        <h2 class="section-title">Post-Registration Video (Hero Unit)</h2>
+    <!-- Section 5: JS Randomization Detail (NEW) -->
+    <div class="page-section" id="js-random">
+        <span class="section-label new">For Espen &amp; Liam</span>
+        <h2 class="section-title">JavaScript Randomization — How It Works</h2>
         <p class="section-description">
-            After a customer registers a BRAVIA 3 TV, we show them a setup video using Hero Unit.
-            This uses the <strong>rotation</strong> approach (Option A) — the embed filters by hashtags 
-            matching their registered product.
+            This section shows the complete implementation pattern for React. The approach is simple: 
+            on page load, pick a random content type from the available options, build the hashtag 
+            expression, and pass it to the Firework embed. The taxonomy stays clean — no duplicate 
+            videos, no fake hashtags.
         </p>
 
-        <div class="tech-note">
-            <span class="tag">&lt;fw-storyblock</span>
-            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span>
-            <span class="attr"> hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span>
-            <span class="attr"> max_videos=</span><span class="val">"1"</span>
-            <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
+        <div class="tech-note" style="line-height: 1.8;">
+            <span class="comment">// === React implementation pattern ===</span><br><br>
+            <span class="comment">// Content types available for the registered product</span><br>
+            <span class="attr">const</span> contentTypes = [<span class="val">'setup'</span>, <span class="val">'feature'</span>, <span class="val">'tutorial'</span>];<br><br>
+            <span class="comment">// Pick a random one on each page load</span><br>
+            <span class="attr">const</span> randomType = contentTypes[Math.floor(Math.random() * contentTypes.length)];<br><br>
+            <span class="comment">// Build hashtag expression from registered product + random type</span><br>
+            <span class="comment">// d1, d2, d3 come from the user's registered product data</span><br>
+            <span class="attr">const</span> hashtag = <span class="val">`(and ${d1} ${d2} ${d3} video ${randomType})`</span>;<br><br>
+            <span class="comment">// Pass to Firework embed</span><br>
+            <span class="tag">&lt;fw-storyblock</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">channel=</span><span class="val">"sony_electronics_us"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">{hashtag}</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span><br>
+            <span class="tag">/&gt;</span>
         </div>
+
+        <div class="callout info">
+            <strong>Why this approach is clean:</strong> The randomization happens in the application layer 
+            (React), not in Firework's taxonomy. The six-dimension hashtag structure stays exactly as agreed. 
+            We're simply varying which D6 content type we ask Firework to filter by on each page load. 
+            If Sony adds new setup or feature videos later, they automatically enter the rotation — 
+            no code changes needed.
+        </div>
+
+        <h3 style="margin-bottom: 12px;">Alternative: Randomize at D5 level (shorts vs videos)</h3>
+        <p class="section-description">
+            Instead of randomizing D6 (content type), we could randomize D5 (format) — 
+            sometimes showing a short clip, sometimes a longer video. Or combine both 
+            for maximum variety. The pattern is the same, just different dimensions.
+        </p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 6: Thank You Page Mock -->
+    <div class="page-section" id="thankyou">
+        <span class="section-label">Thank You Page</span>
+        <h2 class="section-title">Post-Registration Video (Full Mock)</h2>
+        <p class="section-description">
+            The Thank You page using Option C (JS randomization). Each time this page loads, 
+            a different content type is selected. The Player Deck below shows shorts for the same product.
+        </p>
 
         <div class="thankyou-mock">
             <div class="thankyou-header">
@@ -858,31 +954,21 @@
                     <button class="thankyou-btn">Review</button>
                 </div>
 
-                <div class="embed-container live">
-                    <div class="embed-label">Live Firework Embed: Hero Unit (setup videos, rotating)</div>
-                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
-                        max_videos="1"></fw-storyblock>
+                <div class="embed-container live" id="thankyou-embed-container">
+                    <div class="embed-label" id="thankyou-embed-label">Loading randomized video...</div>
+                    <!-- JS will create this embed dynamically with a random content type -->
                 </div>
             </div>
         </div>
 
-        <h3 style="margin-bottom: 12px;">Alternative: Player Deck (multiple shorts)</h3>
+        <h3 style="margin-bottom: 12px;">Player Deck (multiple shorts)</h3>
         <p class="section-description">
-            Shows multiple short feature clips related to the registered product. 
-            No rotation concern here — all matching shorts display side by side.
+            Shows multiple short feature clips for the registered product. 
+            All matching shorts display side by side — no rotation concern.
         </p>
 
-        <div class="tech-note">
-            <span class="tag">&lt;fw-embed-feed</span>
-            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span>
-            <span class="attr"> mode=</span><span class="val">"player_deck"</span>
-            <span class="attr"> hashtag=</span><span class="val">"(and he tv bravia-3 short)"</span>
-            <span class="attr"> max_videos=</span><span class="val">"4"</span>
-            <span class="tag">&gt;&lt;/fw-embed-feed&gt;</span>
-        </div>
-
         <div class="embed-container live">
-            <div class="embed-label">Live Firework Embed: Player Deck (shorts)</div>
+            <div class="embed-label">Player Deck (shorts)</div>
             <fw-embed-feed channel="sony_electronics_us" mode="player_deck" hashtag="(and he tv bravia-3 short)"
                 max_videos="4"></fw-embed-feed>
         </div>
@@ -1016,28 +1102,69 @@
     <script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
 
     <script>
-        // Rotation demo reload
-        let reloadCount = 0;
+        // =====================================================
+        // JS Randomization — Option C demo
+        // This is the pattern Liam would implement in React
+        // =====================================================
 
-        function reloadRotationDemo() {
-            reloadCount++;
-            document.getElementById('reload-count').textContent = 'Reloaded: ' + reloadCount + ' time' + (reloadCount !== 1 ? 's' : '');
+        // Content types available for BRAVIA 3 test videos
+        const contentTypes = ['setup', 'feature', 'tutorial'];
+        let randomCount = 0;
 
-            const container = document.getElementById('rotation-demo-container');
-            // Remove the old embed
-            const oldEmbed = container.querySelector('fw-storyblock');
-            if (oldEmbed) {
-                oldEmbed.remove();
-            }
-            // Create a fresh one (forces Firework to re-fetch)
-            const newEmbed = document.createElement('fw-storyblock');
-            newEmbed.setAttribute('channel', 'sony_electronics_us');
-            newEmbed.setAttribute('hashtag', '(and he tv bravia-3 video setup)');
-            newEmbed.setAttribute('max_videos', '1');
-            container.appendChild(newEmbed);
+        function createRandomEmbed(containerId, labelId) {
+            const container = document.getElementById(containerId);
+            const label = document.getElementById(labelId);
+
+            // Remove existing embed
+            const old = container.querySelector('fw-storyblock');
+            if (old) old.remove();
+
+            // Pick a random content type
+            const pick = contentTypes[Math.floor(Math.random() * contentTypes.length)];
+            const hashtag = '(and he tv bravia-3 video ' + pick + ')';
+
+            // Create new embed with randomized hashtag
+            const embed = document.createElement('fw-storyblock');
+            embed.setAttribute('channel', 'sony_electronics_us');
+            embed.setAttribute('hashtag', hashtag);
+            embed.setAttribute('max_videos', '1');
+            container.appendChild(embed);
+
+            // Update labels
+            label.textContent = 'Option C: Randomized — showing D6=' + pick;
+
+            return { pick, hashtag };
         }
 
-        // Dynamic category filtering
+        function randomizeVideo() {
+            randomCount++;
+            const result = createRandomEmbed('random-demo-container', 'random-demo-label');
+            document.getElementById('random-current-filter').textContent = result.hashtag;
+            document.getElementById('random-count').textContent = 'Randomized: ' + randomCount + ' time' + (randomCount !== 1 ? 's' : '');
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function () {
+            // Option C demo
+            const result = createRandomEmbed('random-demo-container', 'random-demo-label');
+            document.getElementById('random-current-filter').textContent = result.hashtag;
+
+            // Thank You page mock also uses randomization
+            const thankYouContainer = document.getElementById('thankyou-embed-container');
+            const thankYouLabel = document.getElementById('thankyou-embed-label');
+            const pick2 = contentTypes[Math.floor(Math.random() * contentTypes.length)];
+            const hashtag2 = '(and he tv bravia-3 video ' + pick2 + ')';
+            const embed2 = document.createElement('fw-storyblock');
+            embed2.setAttribute('channel', 'sony_electronics_us');
+            embed2.setAttribute('hashtag', hashtag2);
+            embed2.setAttribute('max_videos', '1');
+            thankYouContainer.appendChild(embed2);
+            thankYouLabel.textContent = 'Hero Unit — randomized D6=' + pick2 + ' | filter: ' + hashtag2;
+        });
+
+        // =====================================================
+        // Dynamic category filtering (Video Hub section)
+        // =====================================================
         function filterCategory(category, btn) {
             const grid = document.getElementById('video-hub-grid');
             const filterDisplay = document.getElementById('current-filter');
@@ -1047,17 +1174,13 @@
             btn.classList.add('active');
 
             let hashtagExpression;
-
             if (category === 'all') {
                 hashtagExpression = '(and he tv bravia-3)';
             } else {
                 hashtagExpression = '(and he tv bravia-3 ' + category + ')';
             }
 
-            // Update the embed dynamically
             grid.setAttribute('hashtag', hashtagExpression);
-
-            // Update the display
             filterDisplay.textContent = hashtagExpression;
         }
     </script>
