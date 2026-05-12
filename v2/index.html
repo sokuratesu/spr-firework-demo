@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPR Video Library - Firework Integration Demo v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        .sony-header {
+            background: #000;
+            color: #fff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sony-logo {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 4px;
+        }
+
+        .sony-nav {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .sony-nav a {
+            color: #ccc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .sony-nav a.active {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .demo-banner {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 16px 24px;
+            font-size: 13px;
+            border-bottom: 2px solid #e63946;
+        }
+
+        .demo-banner strong {
+            color: #fff;
+        }
+
+        /* Table of contents */
+        .toc {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 24px 0;
+        }
+
+        .toc-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .toc-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .toc-link {
+            display: inline-block;
+            padding: 6px 14px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .toc-link:hover {
+            border-color: #e63946;
+            color: #e63946;
+        }
+
+        .toc-link.new {
+            border-color: #06d6a0;
+            background: #f0fdf4;
+        }
+
+        .page-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: #e63946;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+        }
+
+        .section-label.new {
+            background: #06d6a0;
+            color: #1a1a1a;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .section-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .tech-note {
+            background: #1a1a2e;
+            color: #a0d2db;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 3px solid #e63946;
+            line-height: 1.6;
+        }
+
+        .tech-note .tag {
+            color: #e63946;
+        }
+
+        .tech-note .attr {
+            color: #ffd166;
+        }
+
+        .tech-note .val {
+            color: #06d6a0;
+        }
+
+        .tech-note .comment {
+            color: #666;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+
+        /* Category filter bar */
+        .category-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .category-btn:hover {
+            border-color: #1a1a1a;
+        }
+
+        .category-btn.active {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+
+        /* Hashtag display */
+        .hashtag-display {
+            background: #f0f0f0;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .hashtag-display .label {
+            font-weight: 600;
+            color: #666;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hashtag-display .expression {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #e63946;
+        }
+
+        /* Dimension table */
+        .dimension-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .dimension-table th {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dimension-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dimension-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .dimension-tag {
+            display: inline-block;
+            background: #e8f4f8;
+            color: #1a6b7a;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+        }
+
+        /* Thank you page mock */
+        .thankyou-mock {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .thankyou-header {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        .thankyou-header h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .thankyou-header p {
+            font-size: 13px;
+            color: #a0a0a0;
+        }
+
+        .thankyou-content {
+            padding: 24px;
+        }
+
+        .thankyou-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .thankyou-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .thankyou-btn.primary {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+
+        /* Embed container */
+        .embed-container {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #fafafa;
+        }
+
+        .embed-container.live {
+            border-color: #e63946;
+            border-style: solid;
+            background: #fff;
+        }
+
+        .embed-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e63946;
+            margin-bottom: 8px;
+        }
+
+        /* Layout options */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scenario comparison */
+        .scenario-box {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-box h4 {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .scenario-box .scenario-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .scenario-label {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+
+        .scenario-label.option-a {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .scenario-label.option-b {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .scenario-label.option-c {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Callout box */
+        .callout {
+            background: #fffbeb;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .callout strong {
+            color: #92400e;
+        }
+
+        .callout.info {
+            background: #eff6ff;
+            border-color: #60a5fa;
+        }
+
+        .callout.info strong {
+            color: #1e40af;
+        }
+
+        .callout.success {
+            background: #f0fdf4;
+            border-color: #4ade80;
+        }
+
+        .callout.success strong {
+            color: #065f46;
+        }
+
+        .reload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-bottom: 16px;
+            transition: background 0.2s;
+        }
+
+        .reload-btn:hover {
+            background: #e63946;
+        }
+
+        .reload-counter {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+            background: #1a1a1a;
+            color: #666;
+        }
+
+        /* Video tag inventory */
+        .tag-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .tag-table th {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .tag-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .tag-table .match-highlight {
+            background: #fef3c7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sony header mock -->
+    <div class="sony-header">
+        <div class="sony-logo">SONY</div>
+        <div class="sony-nav">
+            <a>Locker Room</a>
+            <a class="active">Video Hub</a>
+        </div>
+    </div>
+
+    <!-- Demo context banner -->
+    <div class="demo-banner">
+        <strong>SPR Video Library — Firework Integration Demo v2</strong> &nbsp;|&nbsp;
+        Updated May 12, 2026 &nbsp;|&nbsp;
+        Channel: <strong>sony_electronics_us</strong> &nbsp;|&nbsp;
+        7 tagged BRAVIA 3 test videos
+    </div>
+
+    <!-- Table of contents -->
+    <div class="toc">
+        <div class="toc-title">Jump to section</div>
+        <div class="toc-list">
+            <a href="#taxonomy" class="toc-link">Taxonomy</a>
+            <a href="#test-videos" class="toc-link">Test Video Tags</a>
+            <a href="#rotation" class="toc-link new">↻ Rotation Behavior</a>
+            <a href="#pinned" class="toc-link new">📌 Pinned Video</a>
+            <a href="#thankyou" class="toc-link">Thank You Page</a>
+            <a href="#videohub" class="toc-link">Video Hub Filtering</a>
+            <a href="#embeds" class="toc-link">Embed Types</a>
+            <a href="#personalization" class="toc-link">Personalization</a>
+        </div>
+    </div>
+
+    <!-- Section 1: Taxonomy Overview -->
+    <div class="page-section" id="taxonomy">
+        <span class="section-label">Taxonomy</span>
+        <h2 class="section-title">Six-Dimension Hashtag Structure</h2>
+        <p class="section-description">
+            Every video is tagged with hashtags from six dimensions. This enables flexible filtering across all pages.
+        </p>
+
+        <table class="dimension-table">
+            <thead>
+                <tr>
+                    <th>Dimension</th>
+                    <th>Name</th>
+                    <th>Example Hashtags</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>D1</strong></td>
+                    <td>Product Category</td>
+                    <td><span class="dimension-tag">pe</span> <span class="dimension-tag">he</span> <span
+                            class="dimension-tag">is</span></td>
+                    <td>Top-level category filtering</td>
+                </tr>
+                <tr>
+                    <td><strong>D2</strong></td>
+                    <td>Sub Category</td>
+                    <td><span class="dimension-tag">headphone</span> <span class="dimension-tag">tv</span> <span
+                            class="dimension-tag">soundbar</span></td>
+                    <td>Video Hub category tabs</td>
+                </tr>
+                <tr>
+                    <td><strong>D3</strong></td>
+                    <td>Series</td>
+                    <td><span class="dimension-tag">bravia-3</span> <span class="dimension-tag">linkbuds-clip</span>
+                    </td>
+                    <td>Personalization by registered product series</td>
+                </tr>
+                <tr>
+                    <td><strong>D4</strong></td>
+                    <td>SKU</td>
+                    <td><span class="dimension-tag">wfc900b</span> <span class="dimension-tag">xr-a95l</span></td>
+                    <td>Personalization by specific model</td>
+                </tr>
+                <tr>
+                    <td><strong>D5</strong></td>
+                    <td>Video Format</td>
+                    <td><span class="dimension-tag">short</span> <span class="dimension-tag">video</span></td>
+                    <td>Shorts tab vs Videos tab</td>
+                </tr>
+                <tr>
+                    <td><strong>D6</strong></td>
+                    <td>Content Type</td>
+                    <td><span class="dimension-tag">setup</span> <span class="dimension-tag">tutorial</span> <span
+                            class="dimension-tag">feature</span></td>
+                    <td>Content purpose filtering</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 2: Test Video Tags -->
+    <div class="page-section" id="test-videos">
+        <span class="section-label">Reference</span>
+        <h2 class="section-title">Test Videos in Channel</h2>
+        <p class="section-description">
+            These are the 7 BRAVIA 3 videos currently tagged in the Firework dashboard (Bravia 3 playlist).
+            The hashtag combinations determine which embeds show which videos.
+        </p>
+
+        <table class="tag-table">
+            <thead>
+                <tr>
+                    <th>Video</th>
+                    <th>Duration</th>
+                    <th>D1</th>
+                    <th>D2</th>
+                    <th>D3</th>
+                    <th>D5</th>
+                    <th>D6</th>
+                    <th>Hashtag String</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BRAVIA 3 II — Video A</td>
+                    <td>0:14</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">short</span></td>
+                    <td><span class="dimension-tag">feature</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, short, feature</td>
+                </tr>
+                <tr>
+                    <td>BRAVIA 3 II — Video B</td>
+                    <td>0:14</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">short</span></td>
+                    <td><span class="dimension-tag">feature</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, short, feature</td>
+                </tr>
+                <tr class="match-highlight">
+                    <td>BRAVIA 3 II — Video C ⬅</td>
+                    <td>0:59</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">video</span></td>
+                    <td><span class="dimension-tag">setup</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, video, setup</td>
+                </tr>
+                <tr class="match-highlight">
+                    <td>BRAVIA 3 II — Video D ⬅</td>
+                    <td>0:59</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">video</span></td>
+                    <td><span class="dimension-tag">setup</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, video, setup</td>
+                </tr>
+                <tr>
+                    <td>BRAVIA 3 II — Video E</td>
+                    <td>0:29</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">video</span></td>
+                    <td><span class="dimension-tag">feature</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, video, feature</td>
+                </tr>
+                <tr>
+                    <td>BRAVIA 3 II — Video F</td>
+                    <td>0:29</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">video</span></td>
+                    <td><span class="dimension-tag">feature</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, video, feature</td>
+                </tr>
+                <tr>
+                    <td>BRAVIA 3 II — Video G</td>
+                    <td>4:24</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">video</span></td>
+                    <td><span class="dimension-tag">tutorial</span></td>
+                    <td style="font-family: monospace; font-size: 11px;">he, tv, bravia-3, video, tutorial</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout info">
+            <strong>Note for this demo:</strong> Videos C &amp; D (highlighted) share identical hashtags: 
+            <code>he, tv, bravia-3, video, setup</code>. These are the pair we use below to test 
+            rotation behavior on StoryBlock / Hero Unit.
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 3: Rotation Behavior (NEW) -->
+    <div class="page-section" id="rotation">
+        <span class="section-label new">New — Yuki's Question</span>
+        <h2 class="section-title">Rotation Behavior: Same Hashtags, Multiple Videos</h2>
+        <p class="section-description">
+            <strong>Question from Yuki:</strong> If multiple videos share the same hashtags and we embed a 
+            StoryBlock with <code>max_videos="1"</code>, will it always show the same video?
+        </p>
+
+        <div class="callout success">
+            <strong>Answer (confirmed by Spencer):</strong> StoryBlock auto-rotates sequentially. 
+            When multiple videos match the same hashtag filter, the embed cycles through them 
+            in order — Video C first, then Video D on the next display, then back to C.
+            It does NOT always show the same video.
+        </div>
+
+        <p class="section-description">
+            Below: a live StoryBlock filtering for <code>(and he tv bravia-3 video setup)</code> with 
+            <code>max_videos="1"</code>. Two videos match (C &amp; D). Click the reload button to 
+            destroy and re-create the embed — you should see it cycle between the two setup videos.
+        </p>
+
+        <div class="tech-note">
+            <span class="comment">/* Two videos match this filter: Video C and Video D */</span><br>
+            <span class="tag">&lt;fw-storyblock</span>
+            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
+            <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
+        </div>
+
+        <button class="reload-btn" onclick="reloadRotationDemo()">
+            ↻ Reload embed to test rotation
+        </button>
+        <span class="reload-counter" id="reload-count">Reloaded: 0 times</span>
+
+        <div class="embed-container live" id="rotation-demo-container">
+            <div class="embed-label">Live StoryBlock — sequential rotation (2 matching videos)</div>
+            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
+                max_videos="1"></fw-storyblock>
+        </div>
+
+        <div class="callout">
+            <strong>What to look for:</strong> Each time you reload, the embed should show a different 
+            one of the two 0:59 setup videos. If you see the same video twice in a row, try a third 
+            reload — the rotation is sequential, so it depends on where in the cycle you are.
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 4: Pinned Video (NEW) -->
+    <div class="page-section" id="pinned">
+        <span class="section-label new">New — Option Comparison</span>
+        <h2 class="section-title">Pinned vs Rotating: Thank You Page Options</h2>
+        <p class="section-description">
+            For the Thank You page, we have two approaches. Both are shown live below 
+            so Yuki and Tomo can compare.
+        </p>
+
+        <div class="layout-grid">
+            <!-- Option A: Rotation -->
+            <div class="scenario-box">
+                <span class="scenario-label option-a">Option A — Rotation</span>
+                <h4>Let it rotate (recommended)</h4>
+                <p class="scenario-desc">
+                    Keep the broad hashtag filter. Each time a customer finishes registration, 
+                    they see a different setup video. Fresh content on repeat visits.
+                </p>
+                <div class="tech-note">
+                    <span class="tag">&lt;fw-storyblock</span><br>
+                    &nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
+                    &nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
+                    <span class="tag">&gt;</span>
+                </div>
+                <div class="embed-container live">
+                    <div class="embed-label">Option A: Rotating StoryBlock</div>
+                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
+                        max_videos="1"></fw-storyblock>
+                </div>
+                <div class="callout info" style="margin-bottom:0">
+                    <strong>Pros:</strong> Content stays fresh. No need to update embed code when new setup videos are added — they automatically enter the rotation.<br>
+                    <strong>Cons:</strong> Can't guarantee which specific video a customer sees first.
+                </div>
+            </div>
+
+            <!-- Option B: Pinned -->
+            <div class="scenario-box">
+                <span class="scenario-label option-b">Option B — Pinned</span>
+                <h4>Pin a specific video</h4>
+                <p class="scenario-desc">
+                    Narrow the hashtag filter by adding D4 (SKU) or D6 (content type) to target 
+                    a single video. Or use a Firework content ID to pin exactly one.
+                </p>
+                <div class="tech-note">
+                    <span class="comment">/* Add more hashtags to narrow to 1 match */</span><br>
+                    <span class="tag">&lt;fw-storyblock</span><br>
+                    &nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video tutorial)"</span><br>
+                    &nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
+                    <span class="tag">&gt;</span>
+                </div>
+                <div class="embed-container live">
+                    <div class="embed-label">Option B: Pinned StoryBlock (only 1 tutorial video matches)</div>
+                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video tutorial)"
+                        max_videos="1"></fw-storyblock>
+                </div>
+                <div class="callout" style="margin-bottom:0">
+                    <strong>Pros:</strong> Full control over which video shows. Consistent experience.<br>
+                    <strong>Cons:</strong> Need to update the hashtag filter (or content ID) if you want to change the video. New videos don't appear automatically.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 5: Thank You Page Demo (original, updated) -->
+    <div class="page-section" id="thankyou">
+        <span class="section-label">Thank You Page</span>
+        <h2 class="section-title">Post-Registration Video (Hero Unit)</h2>
+        <p class="section-description">
+            After a customer registers a BRAVIA 3 TV, we show them a setup video using Hero Unit.
+            This uses the <strong>rotation</strong> approach (Option A) — the embed filters by hashtags 
+            matching their registered product.
+        </p>
+
+        <div class="tech-note">
+            <span class="tag">&lt;fw-storyblock</span>
+            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span>
+            <span class="attr"> hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span>
+            <span class="attr"> max_videos=</span><span class="val">"1"</span>
+            <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
+        </div>
+
+        <div class="thankyou-mock">
+            <div class="thankyou-header">
+                <h3>Registration successful!</h3>
+                <p>Thank you for registering your BRAVIA 3</p>
+            </div>
+            <div class="thankyou-content">
+                <div class="thankyou-actions">
+                    <button class="thankyou-btn">Print</button>
+                    <button class="thankyou-btn">Add product</button>
+                    <button class="thankyou-btn">Review</button>
+                </div>
+
+                <div class="embed-container live">
+                    <div class="embed-label">Live Firework Embed: Hero Unit (setup videos, rotating)</div>
+                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
+                        max_videos="1"></fw-storyblock>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 12px;">Alternative: Player Deck (multiple shorts)</h3>
+        <p class="section-description">
+            Shows multiple short feature clips related to the registered product. 
+            No rotation concern here — all matching shorts display side by side.
+        </p>
+
+        <div class="tech-note">
+            <span class="tag">&lt;fw-embed-feed</span>
+            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span>
+            <span class="attr"> mode=</span><span class="val">"player_deck"</span>
+            <span class="attr"> hashtag=</span><span class="val">"(and he tv bravia-3 short)"</span>
+            <span class="attr"> max_videos=</span><span class="val">"4"</span>
+            <span class="tag">&gt;&lt;/fw-embed-feed&gt;</span>
+        </div>
+
+        <div class="embed-container live">
+            <div class="embed-label">Live Firework Embed: Player Deck (shorts)</div>
+            <fw-embed-feed channel="sony_electronics_us" mode="player_deck" hashtag="(and he tv bravia-3 short)"
+                max_videos="4"></fw-embed-feed>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 6: Video Hub with Dynamic Filtering -->
+    <div class="page-section" id="videohub">
+        <span class="section-label">Video Hub</span>
+        <h2 class="section-title">Dynamic Category Filtering</h2>
+        <p class="section-description">
+            Click a category to see the Grid update dynamically. This uses <code>setAttribute</code> to swap
+            the hashtag filter without reloading the page. All matching videos show simultaneously in the grid.
+        </p>
+
+        <div class="callout info">
+            <strong>No rotation issue here.</strong> The Grid shows all matching videos at once. 
+            When filtering by "Setup", both Video C and Video D appear together in the grid.
+        </div>
+
+        <div class="category-bar">
+            <button class="category-btn active" onclick="filterCategory('all', this)">All (7 videos)</button>
+            <button class="category-btn" onclick="filterCategory('setup', this)">Setup (2)</button>
+            <button class="category-btn" onclick="filterCategory('feature', this)">Features (4)</button>
+            <button class="category-btn" onclick="filterCategory('tutorial', this)">Tutorial (1)</button>
+            <button class="category-btn" onclick="filterCategory('short', this)">Shorts (2)</button>
+        </div>
+
+        <div class="hashtag-display">
+            <span class="label">Active filter:</span>
+            <span class="expression" id="current-filter">(and he tv bravia-3)</span>
+        </div>
+
+        <div class="embed-container live">
+            <div class="embed-label">Live Firework Embed: Grid (dynamic filtering)</div>
+            <fw-embed-feed id="video-hub-grid" channel="sony_electronics_us" mode="grid" hashtag="(and he tv bravia-3)"
+                max_videos="8"></fw-embed-feed>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 7: Multiple Embeds Coexisting -->
+    <div class="page-section" id="embeds">
+        <span class="section-label">Embed Types</span>
+        <h2 class="section-title">Different Firework Layouts</h2>
+        <p class="section-description">
+            These are the embed types we plan to use across the SPR pages.
+            All using the same channel with different display modes.
+        </p>
+
+        <div class="layout-grid">
+            <div>
+                <h3 style="margin-bottom: 8px;">Carousel</h3>
+                <p class="section-description">For horizontal scrolling rows like "Suggested for you"</p>
+                <div class="embed-container live">
+                    <div class="embed-label">Carousel</div>
+                    <fw-embed-feed channel="sony_electronics_us" mode="carousel" hashtag="(and he tv bravia-3)"
+                        max_videos="6"></fw-embed-feed>
+                </div>
+            </div>
+            <div>
+                <h3 style="margin-bottom: 8px;">Horizontal Carousel</h3>
+                <p class="section-description">For the registration page teaser section</p>
+                <div class="embed-container live">
+                    <div class="embed-label">Horizontal Carousel</div>
+                    <fw-embed-feed channel="sony_electronics_us" mode="horizontal_carousel"
+                        hashtag="(and he tv bravia-3)" max_videos="6"></fw-embed-feed>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Section 8: Personalization -->
+    <div class="page-section" id="personalization">
+        <span class="section-label">Personalization</span>
+        <h2 class="section-title">How Registered Products Map to Content</h2>
+        <p class="section-description">
+            When a user registers a product, their SKU maps to hashtags.
+            The Video Library shows content filtered by those hashtags.
+        </p>
+
+        <table class="dimension-table">
+            <thead>
+                <tr>
+                    <th>Registered Product</th>
+                    <th>D1</th>
+                    <th>D2</th>
+                    <th>D3</th>
+                    <th>D4</th>
+                    <th>Hashtag Filter Expression</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BRAVIA 3 TV</td>
+                    <td><span class="dimension-tag">he</span></td>
+                    <td><span class="dimension-tag">tv</span></td>
+                    <td><span class="dimension-tag">bravia-3</span></td>
+                    <td><span class="dimension-tag">xr-a95l</span></td>
+                    <td style="font-family: monospace; font-size: 12px;">(and he tv bravia-3)</td>
+                </tr>
+                <tr>
+                    <td>Linkbuds Clip</td>
+                    <td><span class="dimension-tag">pe</span></td>
+                    <td><span class="dimension-tag">headphone</span></td>
+                    <td><span class="dimension-tag">linkbuds-clip</span></td>
+                    <td><span class="dimension-tag">wfc900b</span></td>
+                    <td style="font-family: monospace; font-size: 12px;">(and pe headphone linkbuds-clip)</td>
+                </tr>
+                <tr>
+                    <td>Multiple products</td>
+                    <td colspan="4" style="font-style: italic; color: #999;">Combined using boolean OR</td>
+                    <td style="font-family: monospace; font-size: 12px;">(or bravia-3 linkbuds-clip)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-note">
+        SPR Video Library — Firework Integration Demo v2 | Channel: sony_electronics_us | Business ID: gkk1XQ |
+        Updated May 12, 2026 | For internal review only
+    </div>
+
+    <!-- Firework SDK -->
+    <script async type="module" src="https://asset.fwcdn3.com/js/module/fwn.js?business_id=gkk1XQ"></script>
+    <script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
+
+    <script>
+        // Rotation demo reload
+        let reloadCount = 0;
+
+        function reloadRotationDemo() {
+            reloadCount++;
+            document.getElementById('reload-count').textContent = 'Reloaded: ' + reloadCount + ' time' + (reloadCount !== 1 ? 's' : '');
+
+            const container = document.getElementById('rotation-demo-container');
+            // Remove the old embed
+            const oldEmbed = container.querySelector('fw-storyblock');
+            if (oldEmbed) {
+                oldEmbed.remove();
+            }
+            // Create a fresh one (forces Firework to re-fetch)
+            const newEmbed = document.createElement('fw-storyblock');
+            newEmbed.setAttribute('channel', 'sony_electronics_us');
+            newEmbed.setAttribute('hashtag', '(and he tv bravia-3 video setup)');
+            newEmbed.setAttribute('max_videos', '1');
+            container.appendChild(newEmbed);
+        }
+
+        // Dynamic category filtering
+        function filterCategory(category, btn) {
+            const grid = document.getElementById('video-hub-grid');
+            const filterDisplay = document.getElementById('current-filter');
+
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            let hashtagExpression;
+
+            if (category === 'all') {
+                hashtagExpression = '(and he tv bravia-3)';
+            } else {
+                hashtagExpression = '(and he tv bravia-3 ' + category + ')';
+            }
+
+            // Update the embed dynamically
+            grid.setAttribute('hashtag', hashtagExpression);
+
+            // Update the display
+            filterDisplay.textContent = hashtagExpression;
+        }
+    </script>
+
+</body>
+
+</html>

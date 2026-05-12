@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPR Video Library - Firework Integration Demo</title>
+    <title>SPR Video Library — Firework Demo</title>
     <style>
         * {
             margin: 0;
@@ -16,591 +16,233 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f5f5f5;
             color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .sony-header {
+        .header {
             background: #000;
             color: #fff;
-            padding: 12px 24px;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 16px;
         }
 
-        .sony-logo {
+        .header-logo {
             font-weight: 800;
             font-size: 20px;
             letter-spacing: 4px;
         }
 
-        .sony-nav {
-            display: flex;
-            gap: 16px;
+        .header-divider {
+            width: 1px;
+            height: 20px;
+            background: #444;
+        }
+
+        .header-title {
             font-size: 13px;
+            color: #999;
         }
 
-        .sony-nav a {
-            color: #ccc;
-            text-decoration: none;
-        }
-
-        .sony-nav a.active {
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .demo-banner {
-            background: #1a1a2e;
-            color: #e0e0e0;
-            padding: 16px 24px;
-            font-size: 13px;
-            border-bottom: 2px solid #e63946;
-        }
-
-        .demo-banner strong {
-            color: #fff;
-        }
-
-        .page-section {
-            max-width: 1100px;
+        .main {
+            flex: 1;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 32px 24px;
+            padding: 48px 24px;
+            width: 100%;
         }
 
-        .section-label {
-            display: inline-block;
-            background: #e63946;
-            color: #fff;
-            font-size: 11px;
+        h1 {
+            font-size: 28px;
             font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 3px;
             margin-bottom: 8px;
         }
 
-        .section-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .section-description {
+        .subtitle {
             font-size: 14px;
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 36px;
             line-height: 1.5;
         }
 
-        .tech-note {
-            background: #1a1a2e;
-            color: #a0d2db;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 12px;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            border-left: 3px solid #e63946;
-        }
-
-        .tech-note .tag {
-            color: #e63946;
-        }
-
-        .tech-note .attr {
-            color: #ffd166;
-        }
-
-        .tech-note .val {
-            color: #06d6a0;
-        }
-
-        .divider {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 40px 0;
-        }
-
-        /* Category filter bar */
-        .category-bar {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .category-btn {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background: #fff;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .category-btn:hover {
-            border-color: #1a1a1a;
-        }
-
-        .category-btn.active {
-            background: #1a1a1a;
-            color: #fff;
-            border-color: #1a1a1a;
-        }
-
-        /* Hashtag display */
-        .hashtag-display {
-            background: #f0f0f0;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .hashtag-display .label {
-            font-weight: 600;
-            color: #666;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .hashtag-display .expression {
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            color: #e63946;
-        }
-
-        /* Dimension table */
-        .dimension-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-
-        .dimension-table th {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 10px 14px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .dimension-table td {
-            padding: 10px 14px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .dimension-table tr:nth-child(even) {
-            background: #fafafa;
-        }
-
-        .dimension-tag {
-            display: inline-block;
-            background: #e8f4f8;
-            color: #1a6b7a;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 12px;
-        }
-
-        /* Thank you page mock */
-        .thankyou-mock {
+        .version-card {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .thankyou-header {
-            background: #1a1a2e;
-            color: #fff;
             padding: 20px 24px;
-            text-align: center;
-        }
-
-        .thankyou-header h3 {
-            font-size: 18px;
-            margin-bottom: 4px;
-        }
-
-        .thankyou-header p {
-            font-size: 13px;
-            color: #a0a0a0;
-        }
-
-        .thankyou-content {
-            padding: 24px;
-        }
-
-        .thankyou-actions {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .thankyou-btn {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background: #fff;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .thankyou-btn.primary {
-            background: #1a1a1a;
-            color: #fff;
-            border-color: #1a1a1a;
-        }
-
-        /* Embed container */
-        .embed-container {
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 16px;
             margin-bottom: 16px;
-            background: #fafafa;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.15s;
+            position: relative;
         }
 
-        .embed-container.live {
+        .version-card:hover {
             border-color: #e63946;
-            border-style: solid;
-            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
-        .embed-label {
-            font-size: 11px;
+        .version-card .version-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .version-card .version-name {
+            font-size: 17px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #e63946;
-            margin-bottom: 8px;
         }
 
-        /* Layout options */
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .layout-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .footer-note {
-            text-align: center;
-            padding: 24px;
+        .version-card .version-date {
             font-size: 12px;
             color: #999;
-            background: #1a1a1a;
+        }
+
+        .version-card .version-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+
+        .version-card .version-badge.latest {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .version-card .version-desc {
+            font-size: 13px;
             color: #666;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .version-card .version-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .version-card .vtag {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .version-card .vtag.new {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        .version-card .arrow {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #ccc;
+            transition: color 0.15s;
+        }
+
+        .version-card:hover .arrow {
+            color: #e63946;
+        }
+
+        .info {
+            font-size: 12px;
+            color: #999;
+            margin-top: 24px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: #999;
+            border-top: 1px solid #eee;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Sony header mock -->
-    <div class="sony-header">
-        <div class="sony-logo">SONY</div>
-        <div class="sony-nav">
-            <a href="#">Locker Room</a>
-            <a href="#" class="active">Video Hub</a>
-        </div>
+    <div class="header">
+        <div class="header-logo">SONY</div>
+        <div class="header-divider"></div>
+        <div class="header-title">SPR Video Library — Firework Demo</div>
     </div>
 
-    <!-- Demo context banner -->
-    <div class="demo-banner">
-        <strong>SPR Video Library - Firework Integration Demo</strong> &nbsp;|&nbsp;
-        This page demonstrates how Firework embeds work with the hashtag taxonomy.
-        All videos are from the <strong>sony_electronics_us</strong> channel.
-    </div>
-
-    <!-- Section 1: Taxonomy Overview -->
-    <div class="page-section">
-        <span class="section-label">Taxonomy</span>
-        <h2 class="section-title">Six-Dimension Hashtag Structure</h2>
-        <p class="section-description">
-            Every video is tagged with hashtags from six dimensions. This enables flexible filtering across all pages.
+    <div class="main">
+        <h1>Demo Versions</h1>
+        <p class="subtitle">
+            Firework integration prototypes for the Sony Product Registration Video Library.
+            Each version builds on the previous one.
         </p>
 
-        <table class="dimension-table">
-            <thead>
-                <tr>
-                    <th>Dimension</th>
-                    <th>Name</th>
-                    <th>Example Hashtags</th>
-                    <th>Purpose</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>D1</strong></td>
-                    <td>Product Category</td>
-                    <td><span class="dimension-tag">pe</span> <span class="dimension-tag">he</span> <span
-                            class="dimension-tag">is</span></td>
-                    <td>Top-level category filtering</td>
-                </tr>
-                <tr>
-                    <td><strong>D2</strong></td>
-                    <td>Sub Category</td>
-                    <td><span class="dimension-tag">headphone</span> <span class="dimension-tag">tv</span> <span
-                            class="dimension-tag">soundbar</span></td>
-                    <td>Video Hub category tabs</td>
-                </tr>
-                <tr>
-                    <td><strong>D3</strong></td>
-                    <td>Series</td>
-                    <td><span class="dimension-tag">bravia-3</span> <span class="dimension-tag">linkbuds-clip</span>
-                    </td>
-                    <td>Personalization by registered product series</td>
-                </tr>
-                <tr>
-                    <td><strong>D4</strong></td>
-                    <td>SKU</td>
-                    <td><span class="dimension-tag">wfc900b</span> <span class="dimension-tag">xr-a95l</span></td>
-                    <td>Personalization by specific model</td>
-                </tr>
-                <tr>
-                    <td><strong>D5</strong></td>
-                    <td>Video Format</td>
-                    <td><span class="dimension-tag">short</span> <span class="dimension-tag">video</span></td>
-                    <td>Shorts tab vs Videos tab</td>
-                </tr>
-                <tr>
-                    <td><strong>D6</strong></td>
-                    <td>Content Type</td>
-                    <td><span class="dimension-tag">setup</span> <span class="dimension-tag">tutorial</span> <span
-                            class="dimension-tag">feature</span></td>
-                    <td>Content purpose filtering</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <hr class="divider">
-
-    <!-- Section 2: Thank You Page Demo -->
-    <div class="page-section">
-        <span class="section-label">Thank You Page</span>
-        <h2 class="section-title">Post-Registration Video (Hero Unit)</h2>
-        <p class="section-description">
-            After a customer registers a BRAVIA 3 TV, we show them a setup video using Hero Unit.
-            The embed filters by hashtags matching their registered product.
-        </p>
-
-        <div class="tech-note">
-            <span class="tag">&lt;fw-storyblock</span>
-            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span>
-            <span class="attr"> hashtag=</span><span class="val">"(and he tv bravia-3 setup)"</span>
-            <span class="attr"> max_videos=</span><span class="val">"1"</span>
-            <span class="tag">&gt;&lt;/fw-storyblock&gt;</span>
-        </div>
-
-        <div class="thankyou-mock">
-            <div class="thankyou-header">
-                <h3>Registration successful!</h3>
-                <p>Thank you for registering your BRAVIA 3</p>
+        <a href="v2/" class="version-card">
+            <div class="version-row">
+                <span class="version-name">v2 — Rotation &amp; Pinning</span>
+                <span class="version-date">May 12, 2026</span>
+                <span class="version-badge latest">Latest</span>
             </div>
-            <div class="thankyou-content">
-                <div class="thankyou-actions">
-                    <button class="thankyou-btn">Print</button>
-                    <button class="thankyou-btn">Add product</button>
-                    <button class="thankyou-btn">Review</button>
-                </div>
-
-                <div class="embed-container live">
-                    <div class="embed-label">Live Firework Embed: StoryBlock (setup videos)</div>
-                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 setup)"
-                        max_videos="1"></fw-storyblock>
-                </div>
+            <p class="version-desc">
+                Answers Yuki's rotation question with live demos. Side-by-side comparison of 
+                rotating vs pinned video on the Thank You page. Test video reference table, 
+                improved filtering UI, all embed examples updated.
+            </p>
+            <div class="version-tags">
+                <span class="vtag new">Rotation demo</span>
+                <span class="vtag new">Pinned vs rotating</span>
+                <span class="vtag">Taxonomy</span>
+                <span class="vtag">Dynamic filtering</span>
+                <span class="vtag">Embed types</span>
+                <span class="vtag">Personalization</span>
             </div>
-        </div>
+            <span class="arrow">→</span>
+        </a>
 
-        <h3 style="margin-bottom: 12px;">Version 2: Player Deck (short clips)</h3>
-        <p class="section-description">
-            Alternative approach showing multiple short videos related to the registered product.
-        </p>
-
-        <div class="tech-note">
-            <span class="tag">&lt;fw-embed-feed</span>
-            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span>
-            <span class="attr"> mode=</span><span class="val">"player_deck"</span>
-            <span class="attr"> hashtag=</span><span class="val">"(and he tv bravia-3 short)"</span>
-            <span class="attr"> max_videos=</span><span class="val">"4"</span>
-            <span class="tag">&gt;&lt;/fw-embed-feed&gt;</span>
-        </div>
-
-        <div class="embed-container live">
-            <div class="embed-label">Live Firework Embed: Player Deck (shorts)</div>
-            <fw-embed-feed channel="sony_electronics_us" mode="player_deck" hashtag="(and he tv bravia-3 short)"
-                max_videos="4"></fw-embed-feed>
-        </div>
-    </div>
-
-    <hr class="divider">
-
-    <!-- Section 3: Video Hub with Dynamic Filtering -->
-    <div class="page-section">
-        <span class="section-label">Video Hub</span>
-        <h2 class="section-title">Dynamic Category Filtering</h2>
-        <p class="section-description">
-            Click a category to see the Grid update dynamically. This uses setAttribute to swap
-            the hashtag filter without reloading the page.
-        </p>
-
-        <div class="category-bar">
-            <button class="category-btn active" onclick="filterCategory('all')">All</button>
-            <button class="category-btn" onclick="filterCategory('setup')">Setup</button>
-            <button class="category-btn" onclick="filterCategory('feature')">Features</button>
-            <button class="category-btn" onclick="filterCategory('tutorial')">Tutorials</button>
-            <button class="category-btn" onclick="filterCategory('short')">Shorts</button>
-        </div>
-
-        <div class="hashtag-display">
-            <span class="label">Active filter:</span>
-            <span class="expression" id="current-filter">channel: sony_electronics_us | hashtag: (and he tv
-                bravia-3)</span>
-        </div>
-
-        <div class="embed-container live">
-            <div class="embed-label">Live Firework Embed: Grid (dynamic filtering)</div>
-            <fw-embed-feed id="video-hub-grid" channel="sony_electronics_us" mode="grid" hashtag="(and he tv bravia-3)"
-                max_videos="8"></fw-embed-feed>
-        </div>
-    </div>
-
-    <hr class="divider">
-
-    <!-- Section 4: Multiple Embeds Coexisting -->
-    <div class="page-section">
-        <span class="section-label">Embed Types</span>
-        <h2 class="section-title">Different Firework Layouts</h2>
-        <p class="section-description">
-            These are the embed types we plan to use across the SPR pages.
-            All using the same channel with different display modes.
-        </p>
-
-        <div class="layout-grid">
-            <div>
-                <h3 style="margin-bottom: 8px;">Carousel</h3>
-                <p class="section-description">For horizontal scrolling rows like "Suggested for you"</p>
-                <div class="embed-container live">
-                    <div class="embed-label">Carousel</div>
-                    <fw-embed-feed channel="sony_electronics_us" mode="carousel" hashtag="(and he tv bravia-3)"
-                        max_videos="6"></fw-embed-feed>
-                </div>
+        <a href="v1/" class="version-card">
+            <div class="version-row">
+                <span class="version-name">v1 — Taxonomy &amp; Filtering</span>
+                <span class="version-date">April 21, 2026</span>
             </div>
-            <div>
-                <h3 style="margin-bottom: 8px;">Horizontal Carousel</h3>
-                <p class="section-description">For the registration page teaser section</p>
-                <div class="embed-container live">
-                    <div class="embed-label">Horizontal Carousel</div>
-                    <fw-embed-feed channel="sony_electronics_us" mode="horizontal_carousel"
-                        hashtag="(and he tv bravia-3)" max_videos="6"></fw-embed-feed>
-                </div>
+            <p class="version-desc">
+                First working demo. Six-dimension hashtag taxonomy, dynamic category filtering 
+                with setAttribute, Thank You page mock with Hero Unit and Player Deck, 
+                multiple embed types, personalization mapping.
+            </p>
+            <div class="version-tags">
+                <span class="vtag">Taxonomy</span>
+                <span class="vtag">Dynamic filtering</span>
+                <span class="vtag">Thank You page</span>
+                <span class="vtag">Embed types</span>
+                <span class="vtag">Personalization</span>
             </div>
-        </div>
-    </div>
+            <span class="arrow">→</span>
+        </a>
 
-    <hr class="divider">
-
-    <!-- Section 5: Personalization Example -->
-    <div class="page-section">
-        <span class="section-label">Personalization</span>
-        <h2 class="section-title">How Registered Products Map to Content</h2>
-        <p class="section-description">
-            When a user registers a product, their SKU maps to hashtags.
-            The Video Library shows content filtered by those hashtags.
+        <p class="info">
+            Channel: sony_electronics_us &nbsp;|&nbsp; Business ID: gkk1XQ<br>
+            For internal review only — ASA Digital × Sony North America
         </p>
-
-        <table class="dimension-table">
-            <thead>
-                <tr>
-                    <th>Registered Product</th>
-                    <th>D1</th>
-                    <th>D2</th>
-                    <th>D3</th>
-                    <th>D4</th>
-                    <th>Hashtag Filter Expression</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>BRAVIA 3 TV</td>
-                    <td><span class="dimension-tag">he</span></td>
-                    <td><span class="dimension-tag">tv</span></td>
-                    <td><span class="dimension-tag">bravia-3</span></td>
-                    <td><span class="dimension-tag">xr-a95l</span></td>
-                    <td style="font-family: monospace; font-size: 12px;">(and he tv bravia-3)</td>
-                </tr>
-                <tr>
-                    <td>Linkbuds Clip</td>
-                    <td><span class="dimension-tag">pe</span></td>
-                    <td><span class="dimension-tag">headphone</span></td>
-                    <td><span class="dimension-tag">linkbuds-clip</span></td>
-                    <td><span class="dimension-tag">wfc900b</span></td>
-                    <td style="font-family: monospace; font-size: 12px;">(and pe headphone linkbuds-clip)</td>
-                </tr>
-                <tr>
-                    <td>Multiple products</td>
-                    <td colspan="4" style="font-style: italic; color: #999;">Combined using boolean OR</td>
-                    <td style="font-family: monospace; font-size: 12px;">(or bravia-3 linkbuds-clip)</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
-    <!-- Footer -->
-    <div class="footer-note">
-        SPR Video Library - Firework Integration Demo | Channel: sony_electronics_us | Business ID: gkk1XQ | For
-        internal review only
+    <div class="footer">
+        SPR Video Library — Firework Integration Demo
     </div>
-
-    <!-- Firework SDK -->
-    <script async type="module" src="https://asset.fwcdn3.com/js/module/fwn.js?business_id=gkk1XQ"></script>
-    <script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
-
-    <script>
-        // Dynamic category filtering
-        function filterCategory(category) {
-            const grid = document.getElementById('video-hub-grid');
-            const filterDisplay = document.getElementById('current-filter');
-
-            // Update active button
-            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            let hashtagExpression;
-
-            if (category === 'all') {
-                hashtagExpression = '(and he tv bravia-3)';
-            } else {
-                hashtagExpression = '(and he tv bravia-3 ' + category + ')';
-            }
-
-            // Update the embed dynamically
-            grid.setAttribute('hashtag', hashtagExpression);
-
-            // Update the display
-            filterDisplay.textContent = 'channel: sony_electronics_us | hashtag: ' + hashtagExpression;
-        }
-    </script>
 
 </body>
 
