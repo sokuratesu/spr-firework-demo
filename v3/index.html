@@ -371,27 +371,29 @@
         <h2 class="section-title">Thank You Page: Video Popup Player</h2>
         <p class="section-description">
             When a user clicks on the video or "Watch now", a popup window appears and plays the video
-            on the page. The user can scroll while the video plays, and it becomes a floating player.
+            When a user clicks on the video or "Watch now", a popup window appears and plays the video
+            on the page. If the user scrolls past the video while it's playing, it automatically
+            minimizes into a floating player in the bottom corner (picture-in-picture mode).
         </p>
 
         <div class="callout info">
-            <strong>Try it:</strong> Click on the video below, or click "Watch now". The video opens in a
-            Firework popup. While the popup is open, try clicking outside the video area. It will
-            minimize into a floating player in the corner.
+            <strong>Try it:</strong> Click on the video below to start playing it. Then scroll down
+            past the video. It will automatically minimize into a floating player in the corner.
+            You can also click the video to open the fullscreen popup experience.
         </div>
 
         <div class="steps">
             <div class="step">
                 <div class="step-num">1</div>
-                <div class="step-text"><strong>Click the video or "Watch now"</strong> to open the popup player. The video fills the screen with a scroll-through experience.</div>
+                <div class="step-text"><strong>Click the video</strong> to start playing it. It can play inline or open in the fullscreen popup.</div>
             </div>
             <div class="step">
                 <div class="step-num">2</div>
-                <div class="step-text"><strong>Click outside the video</strong> while it's playing. It minimizes to a floating player in the bottom corner.</div>
+                <div class="step-text"><strong>Scroll down past the video</strong> while it's playing. It automatically minimizes to a floating player in the bottom corner (pip="true" enables this).</div>
             </div>
             <div class="step">
                 <div class="step-num">3</div>
-                <div class="step-text"><strong>Close the floating player</strong> by clicking the X, or click it to return to the full popup.</div>
+                <div class="step-text"><strong>Close the floating player</strong> by clicking the X, or click it to return to the video.</div>
             </div>
         </div>
 
@@ -429,9 +431,9 @@
                 </div>
 
                 <div class="embed-container live">
-                    <div class="embed-label">Click the video to see the popup player behavior</div>
+                    <div class="embed-label">Click the video to play, then scroll down to see the floating player</div>
                     <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
-                        max_videos="1"></fw-storyblock>
+                        max_videos="1" pip="true"></fw-storyblock>
                 </div>
 
                 <div style="text-align: center; margin-top: 10px;">
@@ -485,7 +487,8 @@
             <span class="tag">&lt;fw-storyblock</span>
             <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">pip=</span><span class="val">"true"</span> <span class="comment">/* enables auto-float on scroll */</span>
             <span class="tag"> /&gt;</span>
         </div>
     </div>
@@ -588,21 +591,21 @@
     <!-- ==================== SECTION 4: Floating Player Behavior ==================== -->
     <div class="page-section" id="floating">
         <span class="section-label behavior">Behavior Demo</span>
-        <h2 class="section-title">Floating Player Behavior</h2>
+        <h2 class="section-title">Floating Player Behavior (Picture-in-Picture)</h2>
         <p class="section-description">
-            When a user clicks a video and then clicks outside or scrolls away, the video
-            minimizes into a floating player in the bottom corner. This is a built-in Firework
-            behavior that works automatically with all embed types.
+            When a user plays a video and then scrolls past it, the video automatically
+            minimizes into a floating player in the bottom corner. This is enabled by adding
+            <code>pip="true"</code> to the StoryBlock embed. The video must be playing for this to trigger.
         </p>
 
         <div class="steps">
             <div class="step">
                 <div class="step-num">1</div>
-                <div class="step-text"><strong>Click any video above</strong> to start playing it in the popup.</div>
+                <div class="step-text"><strong>Click any video above</strong> to start playing it.</div>
             </div>
             <div class="step">
                 <div class="step-num">2</div>
-                <div class="step-text"><strong>Click outside the video</strong> or press the minimize button. The player shrinks to a floating widget in the corner.</div>
+                <div class="step-text"><strong>Scroll down past the video</strong> while it's playing. It automatically shrinks to a floating widget in the corner.</div>
             </div>
             <div class="step">
                 <div class="step-num">3</div>
@@ -611,26 +614,26 @@
         </div>
 
         <div class="callout success">
-            <strong>No extra code needed.</strong> The floating player is a built-in Firework SDK behavior.
-            It works automatically with StoryBlock, Player Deck, Grid, and all other embed types.
-            Liam does not need to implement this separately.
+            <strong>pip="true" enables this.</strong> Add it to any fw-storyblock embed. Note: this only
+            works on fw-storyblock, not on fw-embed-feed (Player Deck, Grid, Carousel, etc.).
+            The video must be playing for the auto-float to trigger.
         </div>
 
         <div style="margin-bottom: 20px;">
             <p class="section-description">
-                Below is a full-width Grid embed you can use to test the floating player.
-                Click a video, then scroll down this page while it plays.
+                Below is a StoryBlock with pip="true" you can use to test the floating player.
+                Click the video to start playing, then scroll down this page.
             </p>
         </div>
 
         <div class="embed-container live">
-            <div class="embed-label">Grid embed: click a video, then scroll to see the floating player</div>
-            <fw-embed-feed channel="sony_electronics_us" mode="grid" hashtag="(and he tv bravia-3)"
-                max_videos="6"></fw-embed-feed>
+            <div class="embed-label">StoryBlock with pip="true": play the video, then scroll down</div>
+            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3)"
+                max_videos="3" pip="true"></fw-storyblock>
         </div>
 
         <div style="height: 400px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px;">
-            Scroll area: the floating player should appear in the corner while you're down here
+            Scroll area: if the video is playing, the floating player should appear in the corner
         </div>
     </div>
 
