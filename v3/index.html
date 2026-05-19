@@ -365,6 +365,62 @@
         </div>
     </div>
 
+    
+    
+    <!-- ==================== SECTION 4: Floating Player Behavior ==================== -->
+    <div class="page-section" id="floating">
+        <span class="section-label behavior">Behavior Demo</span>
+        <h2 class="section-title">Floating Player Behavior (Picture-in-Picture)</h2>
+        <p class="section-description">
+            When a user plays a video and then scrolls past it, the video automatically
+            minimizes into a floating player in the bottom corner. This is enabled by adding
+            <code>pip="true"</code> to the StoryBlock embed. The video must be playing for this to trigger.
+        </p>
+    
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text"><strong>Click any video above</strong> to start playing it.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text"><strong>Scroll down past the video</strong> while it's playing. It automatically
+                    shrinks to a floating widget in the corner.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text"><strong>The user can continue browsing</strong> the page while the video plays. Click
+                    the floating player to expand it again, or X to close.</div>
+            </div>
+        </div>
+    
+        <div class="callout success">
+            <strong>pip="true" enables this.</strong> Add it to any fw-storyblock embed. Note: this only
+            works on fw-storyblock, not on fw-embed-feed (Player Deck, Grid, Carousel, etc.).
+            The video must be playing for the auto-float to trigger.
+        </div>
+    
+        <div style="margin-bottom: 20px;">
+            <p class="section-description">
+                Below is a StoryBlock with pip="true" you can use to test the floating player.
+                Click the video to start playing, then scroll down this page.
+            </p>
+        </div>
+    
+        <div class="embed-container live">
+            <div class="embed-label">StoryBlock with pip="true": play the video, then scroll down</div>
+            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3)" max_videos="3"
+                pip="true"></fw-storyblock>
+        </div>
+    
+        <div
+            style="height: 400px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px;">
+            Scroll area: if the video is playing, the floating player should appear in the corner
+        </div>
+    </div>
+
+    <hr class="divider">
+
     <!-- ==================== SECTION 1: Thank You Page - Popup Player ==================== -->
     <div class="page-section" id="thankyou-popup">
         <span class="section-label behavior">Behavior Demo</span>
@@ -615,56 +671,7 @@
         </div>
     </div>
 
-    <hr class="divider">
-
-    <!-- ==================== SECTION 4: Floating Player Behavior ==================== -->
-    <div class="page-section" id="floating">
-        <span class="section-label behavior">Behavior Demo</span>
-        <h2 class="section-title">Floating Player Behavior (Picture-in-Picture)</h2>
-        <p class="section-description">
-            When a user plays a video and then scrolls past it, the video automatically
-            minimizes into a floating player in the bottom corner. This is enabled by adding
-            <code>pip="true"</code> to the StoryBlock embed. The video must be playing for this to trigger.
-        </p>
-
-        <div class="steps">
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-text"><strong>Click any video above</strong> to start playing it.</div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-text"><strong>Scroll down past the video</strong> while it's playing. It automatically shrinks to a floating widget in the corner.</div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-text"><strong>The user can continue browsing</strong> the page while the video plays. Click the floating player to expand it again, or X to close.</div>
-            </div>
-        </div>
-
-        <div class="callout success">
-            <strong>pip="true" enables this.</strong> Add it to any fw-storyblock embed. Note: this only
-            works on fw-storyblock, not on fw-embed-feed (Player Deck, Grid, Carousel, etc.).
-            The video must be playing for the auto-float to trigger.
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <p class="section-description">
-                Below is a StoryBlock with pip="true" you can use to test the floating player.
-                Click the video to start playing, then scroll down this page.
-            </p>
-        </div>
-
-        <div class="embed-container live">
-            <div class="embed-label">StoryBlock with pip="true": play the video, then scroll down</div>
-            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3)"
-                max_videos="3" pip="true"></fw-storyblock>
-        </div>
-
-        <div style="height: 400px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px;">
-            Scroll area: if the video is playing, the floating player should appear in the corner
-        </div>
-    </div>
+    
 
     <!-- Footer -->
     <div class="footer-note">
