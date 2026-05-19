@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPR Video Library - Firework Integration Demo v3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        .sony-header {
+            background: #000;
+            color: #fff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sony-logo { font-weight: 800; font-size: 20px; letter-spacing: 4px; }
+
+        .sony-nav { display: flex; gap: 16px; font-size: 13px; }
+        .sony-nav a { color: #ccc; text-decoration: none; cursor: pointer; }
+        .sony-nav a.active { color: #fff; font-weight: 600; }
+
+        .demo-banner {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 16px 24px;
+            font-size: 13px;
+            border-bottom: 2px solid #e63946;
+        }
+
+        .demo-banner strong { color: #fff; }
+
+        .toc {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 24px 0;
+        }
+
+        .toc-title {
+            font-size: 13px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #999; margin-bottom: 10px;
+        }
+
+        .toc-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+
+        .toc-link {
+            display: inline-block; padding: 6px 14px; background: #fff;
+            border: 1px solid #ddd; border-radius: 20px; font-size: 12px;
+            color: #1a1a1a; text-decoration: none; transition: all 0.2s;
+        }
+
+        .toc-link:hover { border-color: #e63946; color: #e63946; }
+
+        .page-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .section-label {
+            display: inline-block; background: #e63946; color: #fff;
+            font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+            margin-bottom: 8px;
+        }
+
+        .section-label.behavior { background: #534AB7; }
+
+        .section-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+
+        .section-description {
+            font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5;
+        }
+
+        .divider { border: none; border-top: 1px solid #ddd; margin: 40px 0; }
+
+        .callout {
+            background: #fffbeb; border: 1px solid #fbbf24; border-radius: 6px;
+            padding: 14px 16px; margin-bottom: 20px; font-size: 13px; line-height: 1.5;
+        }
+
+        .callout strong { color: #92400e; }
+
+        .callout.info { background: #eff6ff; border-color: #60a5fa; }
+        .callout.info strong { color: #1e40af; }
+
+        .callout.success { background: #f0fdf4; border-color: #4ade80; }
+        .callout.success strong { color: #065f46; }
+
+        .callout.purple { background: #f5f3ff; border-color: #a78bfa; }
+        .callout.purple strong { color: #5b21b6; }
+
+        .tech-note {
+            background: #1a1a2e; color: #a0d2db;
+            font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+            padding: 12px 16px; border-radius: 6px; margin-bottom: 20px;
+            border-left: 3px solid #e63946; line-height: 1.6;
+        }
+
+        .tech-note .tag { color: #e63946; }
+        .tech-note .attr { color: #ffd166; }
+        .tech-note .val { color: #06d6a0; }
+        .tech-note .comment { color: #666; }
+
+        /* Thank You page mock */
+        .thankyou-mock {
+            background: #fff; border: 1px solid #ddd;
+            border-radius: 8px; overflow: hidden; margin-bottom: 20px;
+        }
+
+        .thankyou-header {
+            background: #1a1a2e; color: #fff;
+            padding: 20px 24px; text-align: center;
+        }
+
+        .thankyou-header h3 { font-size: 18px; margin-bottom: 4px; }
+        .thankyou-header p { font-size: 13px; color: #a0a0a0; }
+
+        .thankyou-content { padding: 24px; }
+
+        .thankyou-actions { display: flex; gap: 8px; margin-bottom: 20px; }
+
+        .thankyou-btn {
+            padding: 8px 16px; border: 1px solid #ddd; background: #fff;
+            border-radius: 4px; font-size: 12px; cursor: pointer; font-family: inherit;
+        }
+
+        .thankyou-btn.primary {
+            background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+        }
+
+        /* Embed container */
+        .embed-container {
+            border: 2px dashed #ddd; border-radius: 8px; padding: 16px;
+            margin-bottom: 16px; background: #fafafa;
+        }
+
+        .embed-container.live {
+            border-color: #e63946; border-style: solid; background: #fff;
+        }
+
+        .embed-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #e63946; margin-bottom: 8px;
+        }
+
+        /* Locker mock */
+        .locker-mock {
+            background: #fff; border: 1px solid #ddd;
+            border-radius: 8px; overflow: hidden; margin-bottom: 20px;
+        }
+
+        .locker-nav {
+            background: #1a1a2e; padding: 10px 24px;
+            display: flex; gap: 12px;
+        }
+
+        .locker-nav-btn {
+            padding: 6px 14px; border-radius: 4px; font-size: 12px;
+            font-family: inherit; cursor: pointer; border: none;
+        }
+
+        .locker-nav-btn.active { background: #0078D4; color: #fff; }
+        .locker-nav-btn.inactive { background: transparent; color: #ccc; border: 1px solid #555; }
+
+        .locker-content { padding: 24px; }
+
+        .locker-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .locker-header h3 { font-size: 18px; }
+
+        .locker-header-buttons { display: flex; gap: 8px; }
+
+        .locker-action-btn {
+            padding: 8px 14px; font-size: 12px; border-radius: 4px;
+            cursor: pointer; font-family: inherit; border: 1px solid #ddd; background: #fff;
+        }
+
+        .locker-action-btn.primary { background: #0078D4; color: #fff; border-color: #0078D4; }
+
+        /* Product cards */
+        .product-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 16px; margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) { .product-grid { grid-template-columns: 1fr; } }
+
+        .product-card {
+            background: #fff; border: 1px solid #eee; border-radius: 8px;
+            padding: 16px; text-align: center;
+        }
+
+        .product-card .product-img {
+            width: 100%; height: 100px; background: #f0f0f0; border-radius: 4px;
+            margin-bottom: 10px; display: flex; align-items: center; justify-content: center;
+            color: #ccc; font-size: 11px;
+        }
+
+        .product-card .product-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .product-card .product-meta { font-size: 11px; color: #999; margin-bottom: 10px; }
+
+        .product-card-btn {
+            padding: 6px 12px; font-size: 11px; border: 1px solid #ddd;
+            border-radius: 4px; background: #fff; cursor: pointer; font-family: inherit;
+        }
+
+        /* Video CTA banner */
+        .video-cta-banner {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d5e 100%);
+            border-radius: 8px; padding: 24px; display: flex; gap: 20px;
+            align-items: center; margin-bottom: 24px; color: #fff;
+        }
+
+        .video-cta-banner .video-thumbs {
+            display: flex; gap: 8px; flex-shrink: 0;
+        }
+
+        .video-cta-banner .thumb {
+            width: 80px; height: 120px; background: #333; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .video-cta-banner .thumb .play-icon {
+            width: 24px; height: 24px; background: rgba(255,255,255,0.3);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 10px;
+        }
+
+        .video-cta-banner .cta-text h4 { font-size: 16px; margin-bottom: 4px; }
+        .video-cta-banner .cta-text p { font-size: 12px; color: #a0a0c0; margin-bottom: 12px; }
+
+        .video-cta-banner .cta-btn {
+            padding: 8px 16px; background: #0078D4; color: #fff; border: none;
+            border-radius: 4px; font-size: 12px; cursor: pointer; font-family: inherit;
+        }
+
+        /* Toggle switch */
+        .user-toggle {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+            background: #fff; border: 1px solid #ddd; border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .user-toggle .toggle-label { font-size: 13px; font-weight: 600; }
+
+        .toggle-switch {
+            display: flex; background: #f0f0f0; border-radius: 20px; overflow: hidden;
+        }
+
+        .toggle-option {
+            padding: 6px 16px; font-size: 12px; cursor: pointer;
+            font-family: inherit; border: none; background: transparent;
+            transition: all 0.2s;
+        }
+
+        .toggle-option.active { background: #1a1a1a; color: #fff; border-radius: 20px; }
+
+        .status-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 11px; font-weight: 600;
+        }
+
+        .status-badge.guest { background: #dbeafe; color: #1e40af; }
+        .status-badge.logged-in { background: #d1fae5; color: #065f46; }
+
+        /* Behavior indicator */
+        .behavior-indicator {
+            background: #f5f3ff; border: 1px solid #a78bfa; border-radius: 6px;
+            padding: 10px 16px; margin-bottom: 12px; font-size: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .behavior-indicator .arrow { color: #7c3aed; font-weight: 700; }
+        .behavior-indicator .dest { font-weight: 600; color: #5b21b6; }
+
+        .footer-note {
+            text-align: center; padding: 24px; font-size: 12px;
+            background: #1a1a1a; color: #666;
+        }
+
+        .layout-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+        }
+
+        @media (max-width: 768px) { .layout-grid { grid-template-columns: 1fr; } }
+
+        .embed-wrapper { position: relative; }
+
+        /* Instruction steps */
+        .steps { margin-bottom: 20px; }
+
+        .step {
+            display: flex; gap: 12px; padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .step:last-child { border-bottom: none; }
+
+        .step-num {
+            width: 28px; height: 28px; background: #1a1a2e; color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; flex-shrink: 0;
+        }
+
+        .step-text { font-size: 13px; color: #555; line-height: 1.5; padding-top: 3px; }
+        .step-text strong { color: #1a1a1a; }
+
+        /* Create account CTA */
+        .create-account-bar {
+            background: #e8f4f8; border-radius: 6px; padding: 14px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .create-account-bar .bar-text { font-size: 13px; color: #1a6b7a; }
+        .create-account-bar .bar-text strong { font-size: 14px; display: block; margin-bottom: 2px; color: #0d4f5a; }
+
+        .create-account-btn {
+            padding: 8px 16px; background: #0078D4; color: #fff; border: none;
+            border-radius: 4px; font-size: 12px; cursor: pointer; font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sony header mock -->
+    <div class="sony-header">
+        <div class="sony-logo">SONY</div>
+        <div class="sony-nav">
+            <a>Locker Room</a>
+            <a class="active">Video Hub</a>
+        </div>
+    </div>
+
+    <!-- Demo context banner -->
+    <div class="demo-banner">
+        <strong>SPR Video Library - Firework Integration Demo v3</strong> &nbsp;|&nbsp;
+        Interaction behaviors &nbsp;|&nbsp;
+        Updated May 15, 2026 &nbsp;|&nbsp;
+        Channel: <strong>sony_electronics_us</strong>
+    </div>
+
+    <!-- Table of contents -->
+    <div class="toc">
+        <div class="toc-title">Jump to section</div>
+        <div class="toc-list">
+            <a href="#thankyou-popup" class="toc-link">Thank You: Popup Player</a>
+            <a href="#thankyou-routing" class="toc-link">Thank You: Guest vs Logged-in</a>
+            <a href="#locker-behavior" class="toc-link">Locker: Video CTA + Explore</a>
+            <a href="#floating" class="toc-link">Floating Player</a>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 1: Thank You Page - Popup Player ==================== -->
+    <div class="page-section" id="thankyou-popup">
+        <span class="section-label behavior">Behavior Demo</span>
+        <h2 class="section-title">Thank You Page: Video Popup Player</h2>
+        <p class="section-description">
+            When a user clicks on the video or "Watch now", a popup window appears and plays the video
+            on the page. The user can scroll while the video plays, and it becomes a floating player.
+        </p>
+
+        <div class="callout info">
+            <strong>Try it:</strong> Click on the video below, or click "Watch now". The video opens in a
+            Firework popup. While the popup is open, try clicking outside the video area. It will
+            minimize into a floating player in the corner.
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text"><strong>Click the video or "Watch now"</strong> to open the popup player. The video fills the screen with a scroll-through experience.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text"><strong>Click outside the video</strong> while it's playing. It minimizes to a floating player in the bottom corner.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text"><strong>Close the floating player</strong> by clicking the X, or click it to return to the full popup.</div>
+            </div>
+        </div>
+
+        <div class="thankyou-mock">
+            <div class="thankyou-header">
+                <h3>Registration successful!</h3>
+                <p>Thank you for registering your BRAVIA XR</p>
+            </div>
+            <div class="thankyou-content">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 16px; margin-bottom: 6px;">Thank you for registering your product!</h3>
+                        <p style="font-size: 12px; color: #666; line-height: 1.5;">
+                            A confirmation email with your registration details<br>
+                            has been sent to john.doe@example.com.
+                        </p>
+                    </div>
+                    <div style="width: 120px; height: 80px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">
+                        Product image
+                    </div>
+                </div>
+
+                <div class="thankyou-actions">
+                    <button class="thankyou-btn primary">Print Summary</button>
+                    <button class="thankyou-btn">+ Register another product</button>
+                    <button class="thankyou-btn">Write a review</button>
+                </div>
+
+                <div class="create-account-bar">
+                    <div class="bar-text">
+                        <strong>Manage all of your Sony products in one place</strong>
+                        Create an account for seamless product management and support.
+                    </div>
+                    <button class="create-account-btn">Create an account</button>
+                </div>
+
+                <div class="embed-container live">
+                    <div class="embed-label">Click the video to see the popup player behavior</div>
+                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 video setup)"
+                        max_videos="1"></fw-storyblock>
+                </div>
+
+                <div style="text-align: center; margin-top: 10px;">
+                    <button class="thankyou-btn primary" id="see-all-btn" onclick="handleSeeAllVideos()">
+                        Explore Video Library
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ==================== SECTION 2: Guest vs Logged-in Routing ==================== -->
+    <div class="page-section" id="thankyou-routing">
+        <span class="section-label behavior">Behavior Demo</span>
+        <h2 class="section-title">Thank You Page: Guest vs Logged-in Routing</h2>
+        <p class="section-description">
+            The video embed is the same for both user types. The difference is where the
+            "Explore Video Library" button takes them. Toggle between guest and logged-in
+            to see the routing change.
+        </p>
+
+        <div class="user-toggle">
+            <span class="toggle-label">View as:</span>
+            <div class="toggle-switch">
+                <button class="toggle-option active" onclick="setUserType('guest', this)" id="toggle-guest">Guest</button>
+                <button class="toggle-option" onclick="setUserType('loggedin', this)" id="toggle-loggedin">Logged-in</button>
+            </div>
+            <span class="status-badge guest" id="user-status-badge">Guest user</span>
+        </div>
+
+        <div class="behavior-indicator" id="routing-indicator">
+            <span>"Explore Video Library" button</span>
+            <span class="arrow">→</span>
+            <span class="dest" id="routing-dest">Login / Sign up page</span>
+        </div>
+
+        <div class="callout purple" id="routing-explanation">
+            <strong>Guest flow:</strong> The button takes the user to the login or sign-up page.
+            After creating an account or logging in, they can access the full Video Hub.
+            The same video embed plays regardless of login status.
+        </div>
+
+        <div class="tech-note">
+            <span class="comment">/* React checks login status and routes accordingly */</span><br><br>
+            <span class="attr">const</span> destination = isLoggedIn<br>
+            &nbsp;&nbsp;? <span class="val">'/video-hub'</span><br>
+            &nbsp;&nbsp;: <span class="val">'/login?redirect=/video-hub'</span>;<br><br>
+            <span class="comment">/* The Firework embed is identical for both */</span><br>
+            <span class="tag">&lt;fw-storyblock</span>
+            <span class="attr"> channel=</span><span class="val">"sony_electronics_us"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">hashtag=</span><span class="val">"(and he tv bravia-3 video setup)"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">max_videos=</span><span class="val">"1"</span>
+            <span class="tag"> /&gt;</span>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ==================== SECTION 3: Locker Page Behaviors ==================== -->
+    <div class="page-section" id="locker-behavior">
+        <span class="section-label behavior">Behavior Demo</span>
+        <h2 class="section-title">Locker Page: Video CTA and Navigation</h2>
+        <p class="section-description">
+            The Locker page shows the user's registered products with a video CTA banner.
+            Clicking the video thumbnails opens the popup player. The "Explore new videos" button
+            takes the user to the Video Hub.
+        </p>
+
+        <div class="callout info">
+            <strong>Try it:</strong> Click the videos in the CTA banner below. They open in the same
+            Firework popup player. The "Explore new videos" button navigates to the Video Hub.
+        </div>
+
+        <div class="locker-mock">
+            <div class="locker-nav">
+                <button class="locker-nav-btn active">Locker Room</button>
+                <button class="locker-nav-btn inactive">Video Hub <span style="background:#0078D4; color:#fff; padding:1px 6px; border-radius:8px; font-size:9px; margin-left:4px;">NEW</span></button>
+            </div>
+            <div class="locker-content">
+                <div class="locker-header">
+                    <div>
+                        <p style="font-size: 12px; color: #999;">Welcome, Marco!</p>
+                        <h3>Your products</h3>
+                    </div>
+                    <div class="locker-header-buttons">
+                        <button class="locker-action-btn primary">Register a new product</button>
+                        <button class="locker-action-btn">Contact Support</button>
+                    </div>
+                </div>
+
+                <!-- Product cards row 1 -->
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-img">BRAVIA XR</div>
+                        <div class="product-name">A9K BRAVIA XR MASTER Series</div>
+                        <div class="product-meta">Registered: 31 Dec 2024 | Category: TV</div>
+                        <button class="product-card-btn">View Details</button>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">WH-1000XM4</div>
+                        <div class="product-name">WH-1000XM4 Headphones</div>
+                        <div class="product-meta">Registered: 31 Dec 2024 | Category: Headphones</div>
+                        <button class="product-card-btn">View Details</button>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">Alpha 9 III</div>
+                        <div class="product-name">a9 III with global shutter</div>
+                        <div class="product-meta">Registered: 31 Dec 2024 | Category: Camera</div>
+                        <button class="product-card-btn">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Video CTA banner with live Firework embed -->
+                <div class="embed-container live">
+                    <div class="embed-label">Locker CTA: Click videos to see popup player. "Explore new videos" goes to Video Hub.</div>
+                    <fw-embed-feed channel="sony_electronics_us" mode="player_deck" hashtag="(and he tv bravia-3)"
+                        max_videos="4"></fw-embed-feed>
+                    <div style="margin-top: 12px; text-align: center;">
+                        <button class="locker-action-btn primary" onclick="alert('This would navigate to the Video Hub page.')">
+                            Explore new videos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- More product cards -->
+                <div class="product-grid" style="margin-top: 16px;">
+                    <div class="product-card">
+                        <div class="product-img">BRAVIA 7</div>
+                        <div class="product-name">BRAVIA 7</div>
+                        <div class="product-meta">Registered: 31 Dec 2024 | Category: TV</div>
+                        <button class="product-card-btn">View Details</button>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">Xperia V5</div>
+                        <div class="product-name">Xperia V5</div>
+                        <div class="product-meta">Registered: 31 Dec 2024 | Category: Smart Phone</div>
+                        <button class="product-card-btn">View Details</button>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">WF-1000XM5</div>
+                        <div class="product-name">WF-1000XMS Wireless Earbuds</div>
+                        <div class="product-meta">Registered: 31 Dec 2024 | Category: Earbuds</div>
+                        <button class="product-card-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ==================== SECTION 4: Floating Player Behavior ==================== -->
+    <div class="page-section" id="floating">
+        <span class="section-label behavior">Behavior Demo</span>
+        <h2 class="section-title">Floating Player Behavior</h2>
+        <p class="section-description">
+            When a user clicks a video and then clicks outside or scrolls away, the video
+            minimizes into a floating player in the bottom corner. This is a built-in Firework
+            behavior that works automatically with all embed types.
+        </p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text"><strong>Click any video above</strong> to start playing it in the popup.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text"><strong>Click outside the video</strong> or press the minimize button. The player shrinks to a floating widget in the corner.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text"><strong>The user can continue browsing</strong> the page while the video plays. Click the floating player to expand it again, or X to close.</div>
+            </div>
+        </div>
+
+        <div class="callout success">
+            <strong>No extra code needed.</strong> The floating player is a built-in Firework SDK behavior.
+            It works automatically with StoryBlock, Player Deck, Grid, and all other embed types.
+            Liam does not need to implement this separately.
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <p class="section-description">
+                Below is a full-width Grid embed you can use to test the floating player.
+                Click a video, then scroll down this page while it plays.
+            </p>
+        </div>
+
+        <div class="embed-container live">
+            <div class="embed-label">Grid embed: click a video, then scroll to see the floating player</div>
+            <fw-embed-feed channel="sony_electronics_us" mode="grid" hashtag="(and he tv bravia-3)"
+                max_videos="6"></fw-embed-feed>
+        </div>
+
+        <div style="height: 400px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px;">
+            Scroll area: the floating player should appear in the corner while you're down here
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-note">
+        SPR Video Library - Firework Integration Demo v3 | Interaction Behaviors |
+        Channel: sony_electronics_us | Business ID: gkk1XQ |
+        Updated May 15, 2026 | For internal review only
+    </div>
+
+    <!-- Firework SDK -->
+    <script async type="module" src="https://asset.fwcdn3.com/js/module/fwn.js?business_id=gkk1XQ"></script>
+    <script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
+
+    <script>
+        // Guest vs Logged-in toggle
+        let currentUserType = 'guest';
+
+        function setUserType(type, btn) {
+            currentUserType = type;
+
+            // Update toggle buttons
+            document.querySelectorAll('.toggle-option').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update badge
+            const badge = document.getElementById('user-status-badge');
+            const dest = document.getElementById('routing-dest');
+            const explanation = document.getElementById('routing-explanation');
+            const seeAllBtn = document.getElementById('see-all-btn');
+
+            if (type === 'guest') {
+                badge.textContent = 'Guest user';
+                badge.className = 'status-badge guest';
+                dest.textContent = 'Login / Sign up page';
+                explanation.innerHTML = '<strong>Guest flow:</strong> The button takes the user to the login or sign-up page. After creating an account or logging in, they can access the full Video Hub. The same video embed plays regardless of login status.';
+                explanation.className = 'callout purple';
+                seeAllBtn.textContent = 'Explore Video Library';
+            } else {
+                badge.textContent = 'Logged-in user';
+                badge.className = 'status-badge logged-in';
+                dest.textContent = 'Video Hub (full library)';
+                explanation.innerHTML = '<strong>Logged-in flow:</strong> The button takes the user directly to the Video Hub where they can browse all videos, filter by category, and see content personalized to their registered products.';
+                explanation.className = 'callout success';
+                seeAllBtn.textContent = 'Explore Video Library';
+            }
+        }
+
+        function handleSeeAllVideos() {
+            if (currentUserType === 'guest') {
+                alert('Guest user: this button would navigate to the Login / Sign up page.\n\nAfter logging in, the user is redirected to the Video Hub.');
+            } else {
+                alert('Logged-in user: this button would navigate directly to the Video Hub.');
+            }
+        }
+    </script>
+
+</body>
+
+</html>
