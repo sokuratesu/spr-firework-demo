@@ -711,8 +711,8 @@
             // Log the full detail structure for debugging
             console.log('fw:embed-feed:content-ready full detail:', e.detail);
 
-            // Try different possible payload structures
-            const videos = e.detail?.videos || e.detail?.feed_items || e.detail?.contents || [];
+            // Actual payload structure: e.detail.feed[] with each item having .video
+            const videos = e.detail?.feed || e.detail?.videos || e.detail?.feed_items || e.detail?.contents || [];
 
             if (videos.length > 0) {
                 addLog(`Found <span class="duration-val">${videos.length}</span> video(s) in payload`);
