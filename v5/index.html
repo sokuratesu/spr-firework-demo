@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firework Solutions Test — Duration, Storylink, Dock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        .header {
+            background: #000;
+            color: #fff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 4px;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 20px;
+            background: #444;
+        }
+
+        .header-title {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .banner {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 16px 24px;
+            font-size: 13px;
+            border-bottom: 2px solid #06d6a0;
+        }
+
+        .banner strong {
+            color: #fff;
+        }
+
+        .section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .section-label.test1 {
+            background: #06d6a0;
+            color: #065f46;
+        }
+
+        .section-label.test2 {
+            background: #534AB7;
+        }
+
+        .section-label.test3 {
+            background: #e63946;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+
+        .callout {
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .callout.success {
+            background: #f0fdf4;
+            border: 1px solid #4ade80;
+        }
+
+        .callout.success strong {
+            color: #065f46;
+        }
+
+        .callout.info {
+            background: #eff6ff;
+            border: 1px solid #60a5fa;
+        }
+
+        .callout.info strong {
+            color: #1e40af;
+        }
+
+        .callout.warn {
+            background: #fffbeb;
+            border: 1px solid #fbbf24;
+        }
+
+        .callout.warn strong {
+            color: #92400e;
+        }
+
+        .callout.purple {
+            background: #f5f3ff;
+            border: 1px solid #a78bfa;
+        }
+
+        .callout.purple strong {
+            color: #5b21b6;
+        }
+
+        .tech-note {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            overflow-x: auto;
+            border: 1px solid #30363d;
+        }
+
+        .tech-note .comment {
+            color: #8b949e;
+        }
+
+        .tech-note .keyword {
+            color: #ff7b72;
+        }
+
+        .tech-note .string {
+            color: #a5d6ff;
+        }
+
+        .tech-note .func {
+            color: #d2a8ff;
+        }
+
+        .tech-note .highlight {
+            color: #ffd166;
+            font-weight: 700;
+            background: rgba(255, 209, 102, 0.1);
+            padding: 0 3px;
+            border-radius: 2px;
+        }
+
+        .tech-note .tag {
+            color: #7ee787;
+        }
+
+        /* Log panel */
+        .log-panel {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .log-header {
+            background: #161b22;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .log-header .log-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #06d6a0;
+        }
+
+        .log-header .log-status {
+            font-size: 11px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        .log-header .log-status.waiting {
+            color: #999;
+        }
+
+        .log-header .log-status.ok {
+            color: #06d6a0;
+        }
+
+        .log-body {
+            padding: 12px 16px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: #c9d1d9;
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .log-entry {
+            padding: 2px 0;
+        }
+
+        .log-entry .timestamp {
+            color: #8b949e;
+        }
+
+        .log-entry .event-name {
+            color: #d2a8ff;
+        }
+
+        .log-entry .duration-val {
+            color: #ffd166;
+            font-weight: 700;
+        }
+
+        .log-entry .video-id {
+            color: #a5d6ff;
+        }
+
+        /* Embed container */
+        .embed-container {
+            border: 2px solid #e63946;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #fff;
+        }
+
+        .embed-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e63946;
+            margin-bottom: 8px;
+        }
+
+        /* Custom thumbnail cards for storylink test */
+        .storylink-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .storylink-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .storylink-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .storylink-card .card-thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #111;
+            overflow: hidden;
+        }
+
+        .storylink-card .card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .storylink-card .card-thumb .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .storylink-card .card-thumb .play-icon::after {
+            content: '';
+            border-left: 14px solid #fff;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            margin-left: 3px;
+        }
+
+        .storylink-card .card-thumb .dur-badge {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        .storylink-card .card-thumb .dur-badge.short {
+            background: rgba(230, 57, 70, 0.9);
+        }
+
+        .storylink-card .card-info {
+            padding: 10px 12px;
+        }
+
+        .storylink-card .card-title {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .storylink-card .card-meta {
+            font-size: 10px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* Result indicators */
+        .result-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .result-box.pass {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .result-box.fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .result-box.pending {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 11px;
+            background: #1a1a1a;
+            color: #666;
+        }
+
+        fw-storylink {
+            text-decoration: none;
+            display: block;
+        }
+
+        fw-storylink a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="header-logo">SONY</div>
+        <div class="header-divider"></div>
+        <div class="header-title">Firework Solutions Test — Geevan's Recommendations</div>
+    </div>
+
+    <div class="banner">
+        <strong>Testing three solutions from Firework support (Geevan Lal)</strong> &nbsp;|&nbsp;
+        Duration via content-ready event &nbsp;|&nbsp; Storylink popup trigger &nbsp;|&nbsp; dock="true" auto-float
+    </div>
+
+    <!-- ==================== TEST 1: Duration via content-ready event ==================== -->
+    <div class="section" id="test-duration">
+        <span class="section-label test1">Test 1</span>
+        <h2 class="section-title">Video Duration via content-ready Event</h2>
+        <p class="section-desc">
+            Geevan confirmed: don't use the internal embed feed API. Instead, listen for the
+            <code>fw:embed-feed:content-ready</code> event — the payload contains a video object with duration.
+        </p>
+
+        <div class="callout info">
+            <strong>What to check:</strong> When the Firework embed below loads, the event log should capture
+            the <code>content-ready</code> event and display the duration for each video. If it works,
+            Liam can use this in React to render duration badges.
+        </div>
+
+        <div class="tech-note">
+            <span class="comment">// Geevan's recommended approach</span><br>
+            <span class="keyword">document</span>.<span class="func">addEventListener</span>(<span
+                class="string">'fw:embed-feed:content-ready'</span>, (e) => {<br>
+            &nbsp;&nbsp;<span class="keyword">const</span> videos = e.detail?.videos || e.detail?.feed_items;<br>
+            &nbsp;&nbsp;videos?.forEach(v => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.log(v.caption, <span class="highlight">v.duration</span>);<br>
+            &nbsp;&nbsp;});<br>
+            });
+        </div>
+
+        <!-- Event log -->
+        <div class="log-panel">
+            <div class="log-header">
+                <span class="log-title">Event Log</span>
+                <span class="log-status waiting" id="duration-status">Waiting for embed to load...</span>
+            </div>
+            <div class="log-body" id="duration-log">
+                <div class="log-entry"><span class="timestamp">[--:--:--]</span> Listening for
+                    fw:embed-feed:content-ready...</div>
+            </div>
+        </div>
+
+        <div id="duration-result" class="result-box pending">⏳ Waiting for event...</div>
+
+        <div class="embed-container">
+            <div class="embed-label">Firework Embed — listening for content-ready event</div>
+            <fw-embed-feed id="duration-test-embed" channel="sony_electronics_us" mode="grid"
+                hashtag="(and he tv bravia-3)" max_videos="4">
+            </fw-embed-feed>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ==================== TEST 2: fw-storylink popup trigger ==================== -->
+    <div class="section" id="test-storylink">
+        <span class="section-label test2">Test 2</span>
+        <h2 class="section-title">Custom Cards with fw-storylink Popup Trigger</h2>
+        <p class="section-desc">
+            Geevan provided the <code>fw-storylink</code> component — wrap any custom element and clicking
+            it opens the Firework popup player for that specific video ID. This lets us build our own
+            thumbnail cards with duration badges and still use the Firework player.
+        </p>
+
+        <div class="callout info">
+            <strong>What to check:</strong> Click any of the custom cards below. Each wraps an image in
+            <code>&lt;fw-storylink&gt;</code> with a specific video ID. If it works, the Firework popup
+            should open and play that video.
+        </div>
+
+        <div class="tech-note">
+            <span class="comment">// Geevan's fw-storylink pattern</span><br>
+            <span class="tag">&lt;fw-storylink</span> <span class="string">channel="sony_electronics_us"</span> <span
+                class="string">video="<span class="highlight">VIDEO_ID</span>"</span><span class="tag">&gt;</span><br>
+            &nbsp;&nbsp;<span class="tag">&lt;img</span> <span class="string">src="thumbnail.jpg"</span> <span
+                class="tag">/&gt;</span><br>
+            <span class="tag">&lt;/fw-storylink&gt;</span>
+        </div>
+
+        <p class="section-desc" style="margin-bottom: 12px;">
+            <strong>Cards below use real video IDs from the BRAVIA 3 playlist:</strong>
+        </p>
+
+        <div class="storylink-grid" id="storylink-cards">
+
+            <!-- Card 1: gXN6J6 — 15 Sec 16x9 -->
+            <div class="storylink-card">
+                <fw-storylink channel="sony_electronics_us" video="gXN6J6">
+                    <div class="card-thumb">
+                        <img src="https://cdn4.fireworktv.com/medias/2026/4/21/1776732695-rxihwfks/transcoded/720/FY2620BRAVIA20320II20Cutdown201520Sec2016x920-20Mar203020FNL.jpg"
+                            alt="BRAVIA 3 II 15s 16x9">
+                        <div class="play-icon"></div>
+                        <span class="dur-badge short">0:15</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">FY26 BRAVIA 3 II Cutdown 15 Sec 16x9</div>
+                        <div class="card-meta">ID: gXN6J6 · 16:9 · short, feature</div>
+                    </div>
+                </fw-storylink>
+            </div>
+
+            <!-- Card 2: o0AXm8 — 15 Sec 9x16 -->
+            <div class="storylink-card">
+                <fw-storylink channel="sony_electronics_us" video="o0AXm8">
+                    <div class="card-thumb">
+                        <img src="https://cdn4.fireworktv.com/medias/2026/4/21/1776732688-jkstcilv/transcoded/720/FY2620BRAVIA20320II20Cutdown201520Sec209x1620-20Mar203020FNL.jpg"
+                            alt="BRAVIA 3 II 15s 9x16">
+                        <div class="play-icon"></div>
+                        <span class="dur-badge short">0:15</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">FY26 BRAVIA 3 II Cutdown 15 Sec 9x16</div>
+                        <div class="card-meta">ID: o0AXm8 · 9:16 · short, feature</div>
+                    </div>
+                </fw-storylink>
+            </div>
+
+            <!-- Card 3: vGKx40 — 60 Sec 16x9 -->
+            <div class="storylink-card">
+                <fw-storylink channel="sony_electronics_us" video="vGKx40">
+                    <div class="card-thumb">
+                        <img src="https://cdn4.fireworktv.com/medias/2026/4/21/1776732645-fdypmzxn/transcoded/720/FY2620BRAVIA20320II20Cutdown206020Sec2016x920-20Mar201920FNL.jpg"
+                            alt="BRAVIA 3 II 60s 16x9">
+                        <div class="play-icon"></div>
+                        <span class="dur-badge">1:00</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">FY26 BRAVIA 3 II Cutdown 60 Sec 16x9</div>
+                        <div class="card-meta">ID: vGKx40 · 16:9 · video, setup</div>
+                    </div>
+                </fw-storylink>
+            </div>
+
+            <!-- Card 4: 5xdBDq — Overview (4:25) -->
+            <div class="storylink-card">
+                <fw-storylink channel="sony_electronics_us" video="5xdBDq">
+                    <div class="card-thumb">
+                        <img src="https://cdn4.fireworktv.com/medias/2026/4/21/1776730279-kpyxubjz/transcoded/720/FY2620BRAVIA20320II20Overview20-20Mar201620FNL.jpg"
+                            alt="BRAVIA 3 II Overview">
+                        <div class="play-icon"></div>
+                        <span class="dur-badge">4:25</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">FY26 BRAVIA 3 II Overview - Mar 16 FNL</div>
+                        <div class="card-meta">ID: 5xdBDq · 16:9 · video, tutorial</div>
+                    </div>
+                </fw-storylink>
+            </div>
+
+            <!-- Card 5: 5zyeP6 — 30 Sec 16x9 -->
+            <div class="storylink-card">
+                <fw-storylink channel="sony_electronics_us" video="5zyeP6">
+                    <div class="card-thumb">
+                        <img src="https://cdn4.fireworktv.com/medias/2026/4/21/1776731020-wzdycvkp/transcoded/720/FY2620BRAVIA20320II20Cutdown203020Sec2016x920-20Mar203020FNL.jpg"
+                            alt="BRAVIA 3 II 30s 16x9">
+                        <div class="play-icon"></div>
+                        <span class="dur-badge short">0:30</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">FY26 BRAVIA 3 II Cutdown 30 Sec 16x9</div>
+                        <div class="card-meta">ID: 5zyeP6 · 16:9 · video, feature</div>
+                    </div>
+                </fw-storylink>
+            </div>
+
+            <!-- Card 6: v6d1KD — 30 Sec 9x16 -->
+            <div class="storylink-card">
+                <fw-storylink channel="sony_electronics_us" video="v6d1KD">
+                    <div class="card-thumb">
+                        <img src="https://cdn4.fireworktv.com/medias/2026/4/21/1776730813-jpbrtlom/transcoded/720/FY2620BRAVIA20320II20Cutdown203020Sec209x1620-20Mar203020FNL.jpg"
+                            alt="BRAVIA 3 II 30s 9x16">
+                        <div class="play-icon"></div>
+                        <span class="dur-badge short">0:30</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">FY26 BRAVIA 3 II Cutdown 30 Sec 9x16</div>
+                        <div class="card-meta">ID: v6d1KD · 9:16 · video, feature</div>
+                    </div>
+                </fw-storylink>
+            </div>
+
+        </div>
+
+        <div class="callout purple">
+            <strong>Combined vision:</strong> If both Test 1 (duration event) and Test 2 (storylink) work,
+            Liam can build fully custom video cards — fetch duration from the content-ready event,
+            render cards with thumbnails and time badges, and use fw-storylink to trigger the Firework
+            popup on click. Best of both worlds.
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ==================== TEST 3: dock="true" auto-float ==================== -->
+    <div class="section" id="test-dock">
+        <span class="section-label test3">Test 3</span>
+        <h2 class="section-title">dock="true" — Auto-Float on Scroll</h2>
+        <p class="section-desc">
+            Geevan clarified: <code>pip="true"</code> is for persisting the player across page navigations.
+            For auto-floating when the video scrolls out of view, use <code>dock="true"</code> instead.
+        </p>
+
+        <div class="callout info">
+            <strong>What to check:</strong> Play the video below, then scroll down past it.
+            The player should automatically shrink to a floating widget in the corner.
+            We're testing with <code>dock="true"</code> on a StoryBlock.
+        </div>
+
+        <div class="tech-note">
+            <span class="comment">// What we had (wrong):</span><br>
+            <span class="tag">&lt;fw-storyblock</span> <span class="string">pip="true"</span> ...<span
+                class="tag">&gt;</span><br><br>
+            <span class="comment">// What Geevan recommends (correct):</span><br>
+            <span class="tag">&lt;fw-storyblock</span> <span class="highlight">dock="true"</span> ...<span
+                class="tag">&gt;</span>
+        </div>
+
+        <div class="embed-container">
+            <div class="embed-label">StoryBlock with dock="true" — play, then scroll down</div>
+            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3)" max_videos="3" dock="true">
+            </fw-storyblock>
+        </div>
+
+        <div
+            style="height: 800px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px; flex-direction: column; gap: 8px;">
+            <div>⬆ Scroll up to see the embed</div>
+            <div>If dock="true" works, a floating player should appear in the corner</div>
+            <div style="margin-top: 40px; font-size: 12px; color: #ddd;">Keep scrolling...</div>
+        </div>
+
+        <div
+            style="height: 400px; display: flex; align-items: center; justify-content: center; color: #eee; font-size: 13px;">
+            Still scrolling — floating player should be visible
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Firework Solutions Test | Channel: sony_electronics_us | Business ID: gkk1XQ |
+        Testing Geevan Lal's recommendations | Internal only
+    </div>
+
+    <!-- Firework SDK -->
+    <script async type="module" src="https://asset.fwcdn3.com/js/module/fwn.js?business_id=gkk1XQ"></script>
+    <script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
+
+    <script>
+        // ===================== TEST 1: Listen for content-ready event =====================
+
+        const logBody = document.getElementById('duration-log');
+        const statusEl = document.getElementById('duration-status');
+        const resultEl = document.getElementById('duration-result');
+
+        function timestamp() {
+            const d = new Date();
+            return d.toTimeString().split(' ')[0];
+        }
+
+        function addLog(html) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="timestamp">[${timestamp()}]</span> ${html}`;
+            logBody.appendChild(entry);
+            logBody.scrollTop = logBody.scrollHeight;
+        }
+
+        function formatDuration(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Listen for the content-ready event (Geevan's recommendation)
+        document.addEventListener('fw:embed-feed:content-ready', (e) => {
+            addLog(`<span class="event-name">fw:embed-feed:content-ready</span> fired!`);
+            addLog(`Detail keys: ${Object.keys(e.detail || {}).join(', ')}`);
+
+            // Log the full detail structure for debugging
+            console.log('fw:embed-feed:content-ready full detail:', e.detail);
+
+            // Try different possible payload structures
+            const videos = e.detail?.videos || e.detail?.feed_items || e.detail?.contents || [];
+
+            if (videos.length > 0) {
+                addLog(`Found <span class="duration-val">${videos.length}</span> video(s) in payload`);
+
+                videos.forEach((item, i) => {
+                    // Handle nested structures (item might be {video: {...}} or direct video object)
+                    const v = item.video || item;
+                    const duration = v.duration;
+                    const caption = v.caption || v.title || 'Unknown';
+                    const id = v.encoded_id || v.id || 'N/A';
+
+                    if (duration !== undefined) {
+                        addLog(`  [${i}] <span class="video-id">${id}</span> — "${caption}" — <span class="duration-val">duration: ${duration}s → ${formatDuration(duration)}</span>`);
+                    } else {
+                        addLog(`  [${i}] <span class="video-id">${id}</span> — "${caption}" — <span style="color:#e63946;">duration: NOT FOUND</span>`);
+                        // Log the keys available on this video object
+                        addLog(`  &nbsp;&nbsp;&nbsp;Available keys: ${Object.keys(v).join(', ')}`);
+                    }
+                });
+
+                const hasDuration = videos.some(item => {
+                    const v = item.video || item;
+                    return v.duration !== undefined;
+                });
+
+                if (hasDuration) {
+                    statusEl.textContent = `✓ ${videos.length} videos with duration`;
+                    statusEl.className = 'log-status ok';
+                    resultEl.textContent = '✅ PASS — Duration found in content-ready event';
+                    resultEl.className = 'result-box pass';
+                } else {
+                    statusEl.textContent = `⚠ ${videos.length} videos, no duration`;
+                    statusEl.className = 'log-status';
+                    statusEl.style.color = '#ffd166';
+                    resultEl.textContent = '⚠️ PARTIAL — Videos found but duration field missing';
+                    resultEl.className = 'result-box fail';
+                }
+            } else {
+                addLog(`<span style="color:#ffd166;">No videos array found in payload. Logging full detail:</span>`);
+                addLog(`${JSON.stringify(e.detail, null, 2).substring(0, 500)}`);
+                statusEl.textContent = '⚠ Event fired but no videos';
+                statusEl.style.color = '#ffd166';
+            }
+        });
+
+        // Also listen for other possible event names as fallback
+        ['fw:storyblock:content-ready', 'fw:player:content-ready'].forEach(eventName => {
+            document.addEventListener(eventName, (e) => {
+                addLog(`<span class="event-name">${eventName}</span> also fired — detail keys: ${Object.keys(e.detail || {}).join(', ')}`);
+                console.log(`${eventName} full detail:`, e.detail);
+            });
+        });
+
+        // Catch-all for any fw: events to help debug
+        const originalAddEventListener = EventTarget.prototype.addEventListener;
+        const fwEvents = new Set();
+
+        document.addEventListener = function (type, listener, options) {
+            originalAddEventListener.call(this, type, listener, options);
+        };
+
+        // Monitor for fw events by checking periodically
+        const fwEventNames = [
+            'fw:embed-feed:content-ready',
+            'fw:storyblock:content-ready',
+            'fw:embed-feed:video-play',
+            'fw:embed-feed:video-complete',
+            'fw:player:video-play',
+            'fw:player:ready'
+        ];
+
+        fwEventNames.forEach(name => {
+            document.addEventListener(name, (e) => {
+                if (!fwEvents.has(name)) {
+                    fwEvents.add(name);
+                    addLog(`<span class="event-name">${name}</span> detected`);
+                    console.log(`${name}:`, e.detail);
+                }
+            });
+        });
+
+        // Timeout fallback
+        setTimeout(() => {
+            if (statusEl.textContent.includes('Waiting')) {
+                statusEl.textContent = '⚠ No event after 15s';
+                statusEl.style.color = '#e63946';
+                addLog(`<span style="color:#e63946;">No content-ready event received after 15 seconds.</span>`);
+                addLog(`Check browser console for any fw: events. The event name might differ.`);
+                resultEl.textContent = '❌ TIMEOUT — Event not received after 15s';
+                resultEl.className = 'result-box fail';
+            }
+        }, 15000);
+    </script>
+
+</body>
+
+</html>
