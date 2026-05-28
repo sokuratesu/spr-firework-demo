@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Hub — How New Videos Appear Automatically</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+        }
+
+        /* Sony-style header */
+        .header {
+            background: #000;
+            color: #fff;
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 5px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+        }
+
+        .header-nav a {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .header-nav a.active {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Hero explanation */
+        .hero {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+            color: #fff;
+            padding: 48px 32px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: #a0a8c0;
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Step cards */
+        .steps {
+            max-width: 900px;
+            margin: -32px auto 0;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: #0068b5;
+            color: #fff;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .step-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .step-card p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Main content */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Info callout */
+        .callout {
+            background: #e8f4fd;
+            border-left: 4px solid #0068b5;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            color: #1a3a5c;
+            line-height: 1.6;
+        }
+
+        .callout strong {
+            color: #0068b5;
+        }
+
+        /* Category tabs */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 20px;
+            border: 2px solid #e0e0e0;
+            background: #fff;
+            border-radius: 24px;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #555;
+        }
+
+        .tab:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+
+        .tab.active {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+
+        /* Filter display */
+        .filter-display {
+            background: #f0f0f0;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-value {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #0068b5;
+            font-size: 12px;
+        }
+
+        /* Embed container */
+        .embed-area {
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            min-height: 300px;
+        }
+
+        /* Scenario section */
+        .scenario {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .scenario-header {
+            background: #f8f8f8;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .scenario-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .scenario-body {
+            padding: 20px;
+        }
+
+        .scenario-body p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .scenario-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Simulate button */
+        .simulate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: #0068b5;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .simulate-btn:hover {
+            background: #005a9e;
+            transform: translateY(-1px);
+        }
+
+        .simulate-btn:active {
+            transform: translateY(0);
+        }
+
+        .simulate-btn.done {
+            background: #2e7d32;
+            cursor: default;
+        }
+
+        /* Result message */
+        .result-msg {
+            display: none;
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #1b5e20;
+            line-height: 1.5;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .result-msg.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Summary section */
+        .summary {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+            color: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .summary h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .summary p {
+            color: #a0a8c0;
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        @media (max-width: 640px) {
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-logo">SONY</div>
+        <div class="header-nav">
+            <a href="#">Locker Room</a>
+            <a href="#" class="active">Video Hub</a>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>How New Videos Appear Automatically</h1>
+        <p>When Sony uploads a new video and tags it in Firework, it appears in the Video Hub instantly. No page
+            changes, no developer work needed.</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+        <div class="step-card">
+            <div class="step-number">1</div>
+            <h3>Upload to Firework</h3>
+            <p>Sony uploads a new video through the Firework dashboard — a setup guide, tutorial, or product feature.
+            </p>
+        </div>
+        <div class="step-card">
+            <div class="step-number">2</div>
+            <h3>Add Hashtags</h3>
+            <p>Tag it with the right hashtags — for example: <strong>pe</strong>, <strong>headphone</strong>,
+                <strong>wh-1000xm6</strong>, <strong>tutorial</strong></p>
+        </div>
+        <div class="step-card">
+            <div class="step-number">3</div>
+            <h3>It Appears Here</h3>
+            <p>The Video Hub automatically shows the new video wherever those hashtags are used. No page edits needed.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+
+        <!-- Callout -->
+        <div class="callout">
+            <strong>Try it yourself below.</strong> Click the category tabs to filter videos by product type. Each tab
+            uses a different hashtag filter — the page stays the same, only the content changes.
+        </div>
+
+        <!-- Live Video Hub demo -->
+        <h2 class="section-title">Video Hub</h2>
+
+        <div class="category-tabs">
+            <button class="tab active" onclick="switchCategory('all', this)">All Videos</button>
+            <button class="tab" onclick="switchCategory('headphone', this)">Headphones</button>
+            <button class="tab" onclick="switchCategory('tv', this)">TV</button>
+            <button class="tab" onclick="switchCategory('tutorial', this)">Tutorials</button>
+            <button class="tab" onclick="switchCategory('short', this)">Shorts</button>
+        </div>
+
+        <div class="filter-display">
+            <span class="filter-label">Active filter:</span>
+            <span class="filter-value" id="filter-text">pe headphone</span>
+        </div>
+
+        <div class="embed-area">
+            <fw-embed-feed id="main-grid" channel="sony_electronics_us" mode="grid" hashtag="(and pe headphone)"
+                max_videos="20">
+            </fw-embed-feed>
+        </div>
+
+        <!-- Scenario: What happens next month? -->
+        <div class="scenario">
+            <div class="scenario-header">
+                <div class="scenario-icon" style="background: #e8f4fd; color: #0068b5;">📅</div>
+                <h3>What happens next month?</h3>
+            </div>
+            <div class="scenario-body">
+                <p>Let's say Sony releases a new product — the <strong>WH-1000XM7</strong> — and creates a setup video
+                    for it.</p>
+                <p>The content team uploads the video to Firework, tags it with: <strong>pe</strong>,
+                    <strong>headphone</strong>, <strong>wh-1000xm7</strong>, <strong>video</strong>,
+                    <strong>setup</strong></p>
+                <p>The next time a customer visits the Video Hub, that video automatically appears in the Headphones
+                    section and the Tutorials section. <strong>Nobody needs to edit a single page.</strong></p>
+            </div>
+        </div>
+
+        <!-- Scenario: Try it live -->
+        <div class="scenario">
+            <div class="scenario-header">
+                <div class="scenario-icon" style="background: #fff3e0; color: #e65100;">⚡</div>
+                <h3>Try it: Switch between categories</h3>
+            </div>
+            <div class="scenario-body">
+                <p>Click <strong>"Headphones"</strong> above — you'll see headphone videos. Click <strong>"TV"</strong>
+                    — the same page shows TV content instead. Click <strong>"Tutorials"</strong> — only tutorial content
+                    across all products.</p>
+                <p>This is exactly how the Video Hub works. The page is one page. The content changes based on which
+                    category the customer selects. When Sony adds new videos with the right tags, they appear in the
+                    matching categories automatically.</p>
+            </div>
+        </div>
+
+        <!-- Scenario: Registered product personalization -->
+        <div class="scenario">
+            <div class="scenario-header">
+                <div class="scenario-icon" style="background: #e8f5e9; color: #2e7d32;">👤</div>
+                <h3>Personalization: Registered Products</h3>
+            </div>
+            <div class="scenario-body">
+                <p>When a customer registers a <strong>WH-1000XM5</strong>, the system knows their product. The Thank
+                    You page and Product Locker can show videos filtered specifically for that model.</p>
+                <p>The filter would be: <strong>pe + headphone + wh-1000xm5</strong> — showing only content relevant to
+                    their exact product.</p>
+
+                <button class="simulate-btn" id="personalize-btn" onclick="simulatePersonalization()">
+                    👉 Show me WH-1000XM5 videos only
+                </button>
+
+                <div class="result-msg" id="personalize-result">
+                    The grid above now shows only WH-1000XM5 content — setup guides, tutorials, and tips specific to
+                    that model. This is what a customer who registered a WH-1000XM5 would see.
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <h2>No new pages needed — ever</h2>
+            <p>The Video Hub is one page powered by hashtag filters. New videos appear automatically when tagged.
+                Categories update themselves. Product personalization works from day one.</p>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        SPR Video Library — Dynamic Content Demo | Channel: sony_electronics_us
+    </div>
+
+    <!-- Firework SDK -->
+    <script async type="module" src="https://asset.fwcdn3.com/js/module/fwn.js?business_id=gkk1XQ"></script>
+    <script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
+
+    <script>
+        function switchCategory(category, btn) {
+            const grid = document.getElementById('main-grid');
+            const filterText = document.getElementById('filter-text');
+
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Reset personalization button if it was clicked
+            const pBtn = document.getElementById('personalize-btn');
+            pBtn.classList.remove('done');
+            pBtn.textContent = '👉 Show me WH-1000XM5 videos only';
+            document.getElementById('personalize-result').classList.remove('visible');
+
+            let hashtag, displayText;
+
+            switch (category) {
+                case 'all':
+                    hashtag = '(and pe headphone)';
+                    displayText = 'pe headphone';
+                    break;
+                case 'headphone':
+                    hashtag = '(and pe headphone)';
+                    displayText = 'pe headphone';
+                    break;
+                case 'tv':
+                    hashtag = '(and he tv)';
+                    displayText = 'he tv';
+                    break;
+                case 'tutorial':
+                    hashtag = '(and pe headphone tutorial)';
+                    displayText = 'pe headphone tutorial';
+                    break;
+                case 'short':
+                    hashtag = '(and pe headphone short)';
+                    displayText = 'pe headphone short';
+                    break;
+            }
+
+            grid.setAttribute('hashtag', hashtag);
+            filterText.textContent = displayText;
+        }
+
+        function simulatePersonalization() {
+            const grid = document.getElementById('main-grid');
+            const filterText = document.getElementById('filter-text');
+            const btn = document.getElementById('personalize-btn');
+            const result = document.getElementById('personalize-result');
+
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            // Apply personalized filter
+            grid.setAttribute('hashtag', '(and pe headphone wh-1000xm5)');
+            filterText.textContent = 'pe headphone wh-1000xm5';
+
+            // Update button state
+            btn.classList.add('done');
+            btn.textContent = '✓ Showing WH-1000XM5 videos';
+
+            // Show result message
+            result.classList.add('visible');
+        }
+    </script>
+
+</body>
+
+</html>
