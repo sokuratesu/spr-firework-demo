@@ -523,10 +523,25 @@
                                 <div class="embed-label">Setup video (filtered by: he + tv + bravia-3 + setup)</div>
                                 <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 setup)"
                                     max_videos="1"></fw-storyblock>
+                                <div
+                                    style="margin-top: 10px; background: #1a1a2e; padding: 10px 14px; border-radius: 6px; border-left: 3px solid #e63946;">
+                                    <code
+                                        style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #a0d2db; line-height: 1.5; display: block; white-space: pre-wrap;"><span style="color:#e63946;">&lt;fw-storyblock</span> <span style="color:#ffd166;">channel=</span><span style="color:#06d6a0;">"sony_electronics_us"</span>
+  <span style="color:#ffd166;">hashtag=</span><span style="color:#06d6a0;">"(and he tv bravia-3 setup)"</span>
+  <span style="color:#ffd166;">max_videos=</span><span style="color:#06d6a0;">"1"</span><span style="color:#e63946;">&gt;&lt;/fw-storyblock&gt;</span></code>
+                                </div>
                                 <div style="margin-top: 20px;">
                                     <div class="embed-label">All BRAVIA 3 videos (filtered by: he + tv + bravia-3)</div>
                                     <fw-embed-feed channel="sony_electronics_us" mode="carousel"
                                         hashtag="(and he tv bravia-3)" max_videos="6"></fw-embed-feed>
+                                    <div
+                                        style="margin-top: 10px; background: #1a1a2e; padding: 10px 14px; border-radius: 6px; border-left: 3px solid #e63946;">
+                                        <code
+                                            style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #a0d2db; line-height: 1.5; display: block; white-space: pre-wrap;"><span style="color:#e63946;">&lt;fw-embed-feed</span> <span style="color:#ffd166;">channel=</span><span style="color:#06d6a0;">"sony_electronics_us"</span>
+  <span style="color:#ffd166;">mode=</span><span style="color:#06d6a0;">"carousel"</span>
+  <span style="color:#ffd166;">hashtag=</span><span style="color:#06d6a0;">"(and he tv bravia-3)"</span>
+  <span style="color:#ffd166;">max_videos=</span><span style="color:#06d6a0;">"6"</span><span style="color:#e63946;">&gt;&lt;/fw-embed-feed&gt;</span></code>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -722,56 +737,47 @@
                                 its hashtags match.</div>
                         </div>
                         <div class="step">
-                            <div class="step-head"><span class="step-num">2</span><span class="step-title">Try a filter
-                                    combination</span></div>
-                            <div class="step-text">Click tags below to build a filter and see the results on the right:
-                            </div>
+                            <div class="step-head"><span class="step-num">2</span><span class="step-title">Select a
+                                    section to preview</span></div>
+                            <div class="step-text">Each section below represents a real Video Hub section. Select one to
+                                see which videos match and the embed code used.</div>
                             <div style="margin-left: 36px;">
-                                <div
-                                    style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">
-                                    Category</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;" id="vh-cat">
-                                    <span class="tag tag-on" data-tag="pe" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">pe (20)</span>
-                                    <span class="tag tag-on" data-tag="he" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">he (7)</span>
-                                </div>
-                                <div
-                                    style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">
-                                    Sub Category</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;" id="vh-sub">
-                                    <span class="tag tag-on" data-tag="headphone" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">headphone (20)</span>
-                                    <span class="tag tag-on" data-tag="tv" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">tv (7)</span>
-                                </div>
-                                <div
-                                    style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">
-                                    Content Type</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;"
-                                    id="vh-type">
-                                    <span class="tag tag-on" data-tag="tutorial" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">tutorial (19)</span>
-                                    <span class="tag tag-on" data-tag="feature" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">feature (4)</span>
-                                    <span class="tag tag-on" data-tag="setup" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">setup (3)</span>
-                                    <span class="tag tag-on" data-tag="tips" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">tips (1)</span>
-                                </div>
-                                <div
-                                    style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">
-                                    Format</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;" id="vh-fmt">
-                                    <span class="tag tag-on" data-tag="video" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">video (17)</span>
-                                    <span class="tag tag-on" data-tag="short" onclick="toggleVH(this)"
-                                        style="cursor:pointer;">short (10)</span>
-                                </div>
+                                <select class="product-select" id="vh-section" onchange="switchSection()"
+                                    style="margin-left: 0; min-width: 320px;">
+                                    <option value="" data-label="All Videos" data-count="31">All Videos (no filter) - 31
+                                        videos</option>
+                                    <option value="pe,headphone" data-label="All Headphones" data-count="20">All
+                                        Headphones - 20 videos</option>
+                                    <option value="he,tv" data-label="All TV" data-count="7">All TV - 7 videos</option>
+                                    <option value="pe,headphone,tutorial" data-label="Headphone Tutorials"
+                                        data-count="18">Headphone Tutorials - 18 videos</option>
+                                    <option value="pe,headphone,short" data-label="Headphone Shorts" data-count="8">
+                                        Headphone Shorts - 8 videos</option>
+                                    <option value="he,tv,feature" data-label="TV Features" data-count="4">TV Features -
+                                        4 videos</option>
+                                    <option value="he,tv,setup" data-label="TV Setup Guides" data-count="2">TV Setup
+                                        Guides - 2 videos</option>
+                                    <option value="setup" data-label="All Setup Videos" data-count="3">All Setup Videos
+                                        - 3 videos</option>
+                                    <option value="short" data-label="All Shorts" data-count="10">All Shorts - 10 videos
+                                    </option>
+                                    <option value="feature" data-label="All Feature Videos" data-count="4">All Feature
+                                        Videos - 4 videos</option>
+                                </select>
                             </div>
                             <div class="expr" style="margin-left: 36px;">
                                 <div class="expr-label">Section filter</div>
-                                <div class="expr-code" id="vh-expr">Click a tag to start</div>
+                                <div class="expr-code" id="vh-expr">channel: sony_electronics_us (no filter)</div>
+                            </div>
+                            <div
+                                style="margin-left: 36px; margin-top: 12px; background: #1a1a2e; padding: 12px 16px; border-radius: 6px; border-left: 3px solid #e63946;">
+                                <div
+                                    style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin-bottom: 4px;">
+                                    Embed code</div>
+                                <code id="vh-code"
+                                    style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #a0d2db; line-height: 1.6; display: block; white-space: pre-wrap;"><span style="color:#e63946;">&lt;fw-embed-feed</span> <span style="color:#ffd166;">channel=</span><span style="color:#06d6a0;">"sony_electronics_us"</span>
+  <span style="color:#ffd166;">mode=</span><span style="color:#06d6a0;">"grid"</span>
+  <span style="color:#ffd166;">max_videos=</span><span style="color:#06d6a0;">"8"</span><span style="color:#e63946;">&gt;&lt;/fw-embed-feed&gt;</span></code>
                             </div>
                         </div>
                         <div class="step">
@@ -788,7 +794,7 @@
                         <span class="panel-label">Video Hub result</span>
                     </div>
                     <div class="panel-content">
-                        <div class="embed-label">Videos matching your filter</div>
+                        <div class="embed-label" id="vh-section-label">All Videos</div>
                         <fw-embed-feed id="vh-grid" channel="sony_electronics_us" mode="grid"
                             max_videos="8"></fw-embed-feed>
                     </div>
@@ -884,27 +890,27 @@
         }
         switchProduct();
 
-        var vhActive = {};
-        function toggleVH(chip) {
-            var tag = chip.dataset.tag;
-            if (vhActive[tag]) {
-                delete vhActive[tag];
-                chip.classList.remove('tag-new');
-                chip.classList.add('tag-on');
-            } else {
-                vhActive[tag] = true;
-                chip.classList.remove('tag-on');
-                chip.classList.add('tag-new');
-            }
-            var tags = Object.keys(vhActive);
+        function switchSection() {
+            var sel = document.getElementById('vh-section');
+            var val = sel.value;
+            var label = sel.options[sel.selectedIndex].dataset.label;
+            var tags = val ? val.split(',') : [];
             var expr = buildExpr(tags);
-            document.getElementById('vh-expr').textContent = expr || 'Click a tag to start';
             var grid = document.getElementById('vh-grid');
+
+            document.getElementById('vh-section-label').textContent = label;
+            document.getElementById('vh-expr').textContent = expr ? 'hashtag: ' + expr : 'channel: sony_electronics_us (no filter)';
+
             if (expr) {
                 grid.setAttribute('hashtag', expr);
             } else {
                 grid.removeAttribute('hashtag');
             }
+
+            // Update embed code display
+            var codeEl = document.getElementById('vh-code');
+            var hashAttr = expr ? '\n  <span style="color:#ffd166;">hashtag=</span><span style="color:#06d6a0;">"' + expr + '"</span>' : '';
+            codeEl.innerHTML = '<span style="color:#e63946;">&lt;fw-embed-feed</span> <span style="color:#ffd166;">channel=</span><span style="color:#06d6a0;">"sony_electronics_us"</span>\n  <span style="color:#ffd166;">mode=</span><span style="color:#06d6a0;">"grid"</span>' + hashAttr + '\n  <span style="color:#ffd166;">max_videos=</span><span style="color:#06d6a0;">"8"</span><span style="color:#e63946;">&gt;&lt;/fw-embed-feed&gt;</span>';
         }
     </script>
 
