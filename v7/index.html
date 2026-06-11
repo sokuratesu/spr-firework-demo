@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPR Video Library - Content Management Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; }
+
+        .sony-header { background: #000; color: #fff; padding: 12px 24px; display: flex; align-items: center; }
+        .sony-logo { font-weight: 800; font-size: 20px; letter-spacing: 4px; }
+
+        .demo-banner { background: #1a1a2e; color: #e0e0e0; padding: 14px 24px; font-size: 13px; border-bottom: 2px solid #e63946; line-height: 1.6; }
+        .demo-banner strong { color: #fff; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        /* Scenario tabs */
+        .scenario-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #ddd; }
+        .scenario-tab {
+            padding: 12px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+            border: none; background: none; color: #666; border-bottom: 2px solid transparent;
+            margin-bottom: -2px; font-family: inherit; transition: all 0.2s;
+        }
+        .scenario-tab:hover { color: #1a1a1a; }
+        .scenario-tab.active { color: #1a1a1a; border-bottom-color: #e63946; }
+
+        /* Section titles */
+        .section-intro { margin-bottom: 24px; }
+        .section-intro h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .section-intro p { font-size: 14px; color: #555; line-height: 1.6; }
+
+        /* Split layout */
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; align-items: start; }
+        @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+
+        /* Panels */
+        .panel { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
+        .panel-head { padding: 10px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; }
+        .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 8px; border-radius: 3px; }
+        .badge-fw { background: #e63946; color: #fff; }
+        .badge-page { background: #1a1a2e; color: #fff; }
+        .panel-label { font-size: 13px; font-weight: 600; }
+        .panel-content { padding: 20px; }
+
+        /* Steps */
+        .step { margin-bottom: 24px; }
+        .step:last-child { margin-bottom: 0; }
+        .step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .step-num {
+            width: 26px; height: 26px; background: #e63946; color: #fff;
+            border-radius: 50%; font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .step-title { font-size: 14px; font-weight: 600; }
+        .step-text { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 10px; padding-left: 36px; }
+
+        /* Screenshots */
+        .screenshot {
+            border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+            margin: 0 0 12px 36px; max-width: 100%;
+        }
+        .screenshot img { width: 100%; display: block; }
+        .screenshot-caption {
+            background: #f8f8f8; padding: 8px 12px; font-size: 11px; color: #888;
+            border-top: 1px solid #eee;
+        }
+
+        /* Arrow callout on screenshot */
+        .callout {
+            background: #e63946; color: #fff; font-size: 11px; font-weight: 600;
+            padding: 4px 10px; border-radius: 4px; display: inline-block; margin: 0 0 8px 36px;
+        }
+
+        /* Tag chips */
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 8px 36px; }
+        .tag {
+            padding: 4px 10px; border-radius: 4px; font-size: 12px;
+            font-family: 'SF Mono', 'Fira Code', monospace; border: 1px solid;
+        }
+        .tag-on { background: #e8f4f8; color: #1a6b7a; border-color: #b2d8e2; }
+        .tag-off { background: #f5f5f5; color: #aaa; border-color: #ddd; text-decoration: line-through; }
+        .tag-new { background: #fff3cd; color: #856404; border-color: #ffc107; }
+
+        /* Expression bar */
+        .expr {
+            background: #1a1a2e; padding: 10px 14px; border-radius: 6px;
+            margin: 12px 0 12px 36px; max-width: 500px;
+        }
+        .expr-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin-bottom: 3px; }
+        .expr-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: #e63946; }
+
+        /* Page mock */
+        .mock { border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; }
+        .mock-top { background: #1a1a2e; color: #fff; padding: 16px; text-align: center; }
+        .mock-top h3 { font-size: 16px; margin-bottom: 2px; }
+        .mock-top p { font-size: 12px; color: #a0a0a0; }
+        .mock-body { padding: 16px; }
+        .mock-btns { display: flex; gap: 6px; margin-bottom: 14px; }
+        .mock-btn { padding: 6px 12px; border: 1px solid #ddd; background: #fff; border-radius: 4px; font-size: 11px; }
+        .mock-btn-dark { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+        .embed-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #e63946; margin-bottom: 6px; }
+
+        /* Interactive demo */
+        .interactive-note {
+            background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px;
+            padding: 12px 16px; font-size: 13px; color: #856404; margin: 12px 0 12px 36px;
+            max-width: 500px; line-height: 1.5;
+        }
+
+        /* Product selector */
+        .product-select {
+            padding: 10px 14px; border: 1px solid #ddd; border-radius: 6px;
+            font-size: 14px; font-family: inherit; background: #fafafa;
+            margin: 8px 0 12px 36px; min-width: 280px;
+        }
+
+        /* Key takeaways */
+        .takeaways { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px; }
+        .takeaways h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+        .takeaways p { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 10px; }
+        .takeaways p:last-child { margin-bottom: 0; }
+
+        .footer { text-align: center; padding: 20px; font-size: 11px; color: #999; margin-top: 40px; }
+
+        .scenario-view { display: none; }
+        .scenario-view.active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="sony-header"><div class="sony-logo">SONY</div></div>
+
+<div class="demo-banner">
+    <strong>How to manage videos after launch</strong> &mdash;
+    This page shows your workflow: what you change in the Firework dashboard (left) and
+    how it affects the live pages (right). The pages never need code changes.
+</div>
+
+<div class="container">
+
+    <div class="scenario-tabs">
+        <button class="scenario-tab active" onclick="showScenario('replace', this)">Replace a video</button>
+        <button class="scenario-tab" onclick="showScenario('products', this)">Different products</button>
+        <button class="scenario-tab" onclick="showScenario('newvideo', this)">Add a new video</button>
+        <button class="scenario-tab" onclick="showScenario('videohub', this)">Video Hub sections</button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCENARIO: Replace a video -->
+    <!-- ============================================ -->
+    <div id="s-replace" class="scenario-view active">
+        <div class="section-intro">
+            <h2>Replace the video on the Thank You page</h2>
+            <p>The Thank You page for BRAVIA 3 currently shows a setup video. You want to show a different video instead. Here is how.</p>
+        </div>
+
+        <div class="split">
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-fw">Firework Dashboard</span>
+                    <span class="panel-label">What you do</span>
+                </div>
+                <div class="panel-content">
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">1</span>
+                            <span class="step-title">Open the video library</span>
+                        </div>
+                        <div class="step-text">Go to the Firework dashboard and find the video you want to change.</div>
+                        <div class="screenshot">
+                            <img src="fw-library.png" alt="Firework video library">
+                            <div class="screenshot-caption">Library > All Videos. Click on any video to edit it.</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">2</span>
+                            <span class="step-title">See the current hashtags</span>
+                        </div>
+                        <div class="step-text">The video's hashtags determine where it appears. This video has 6 hashtags:</div>
+                        <div class="screenshot">
+                            <img src="fw-edit-hashtags.png" alt="Video hashtags in Firework">
+                            <div class="screenshot-caption">Edit Content > Hashtags section. Each tag controls which pages show this video.</div>
+                        </div>
+                        <div class="callout">These hashtags are what connect videos to pages</div>
+                        <div class="tags">
+                            <span class="tag tag-on">pe</span>
+                            <span class="tag tag-on">headphone</span>
+                            <span class="tag tag-on">wh-1000xm6</span>
+                            <span class="tag tag-on">wh1000xm6</span>
+                            <span class="tag tag-on">video</span>
+                            <span class="tag tag-on">tutorial</span>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">3</span>
+                            <span class="step-title">Change the hashtags</span>
+                        </div>
+                        <div class="step-text">To remove this video from the Thank You page, remove the "setup" tag. To add it to a different section, add the appropriate tag.</div>
+                        <div class="screenshot">
+                            <img src="fw-search-tag.png" alt="Searching for a hashtag">
+                            <div class="screenshot-caption">Type to search or create a new hashtag. Press enter to add it.</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">4</span>
+                            <span class="step-title">Save and done</span>
+                        </div>
+                        <div class="step-text">Click "Save & Close." The page updates automatically. No code changes needed.</div>
+                        <div class="screenshot">
+                            <img src="fw-tag-added.png" alt="Hashtag added">
+                            <div class="screenshot-caption">The new hashtag appears instantly. Click Save & Close to apply.</div>
+                        </div>
+                    </div>
+
+                    <div class="expr">
+                        <div class="expr-label">The Thank You page for BRAVIA 3 always looks for</div>
+                        <div class="expr-code">(and he tv bravia-3 setup)</div>
+                    </div>
+                    <div class="step-text" style="padding-left: 0; margin-top: 12px;">
+                        Any video with ALL of those hashtags will appear on that page.
+                        Remove one hashtag and the video disappears. Add those hashtags
+                        to a different video and that one appears instead.
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-page">Live Page</span>
+                    <span class="panel-label">What the customer sees</span>
+                </div>
+                <div class="panel-content">
+                    <div class="mock">
+                        <div class="mock-top">
+                            <h3>Registration successful!</h3>
+                            <p>Thank you for registering your BRAVIA 3</p>
+                        </div>
+                        <div class="mock-body">
+                            <div class="mock-btns">
+                                <button class="mock-btn mock-btn-dark">Print</button>
+                                <button class="mock-btn">Add product</button>
+                                <button class="mock-btn">Review</button>
+                            </div>
+                            <div class="embed-label">Setup video (filtered by: he + tv + bravia-3 + setup)</div>
+                            <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-3 setup)" max_videos="1"></fw-storyblock>
+                            <div style="margin-top: 20px;">
+                                <div class="embed-label">Related videos (filtered by: he + tv + bravia-3)</div>
+                                <fw-embed-feed channel="sony_electronics_us" mode="carousel" hashtag="(and he tv bravia-3)" max_videos="6"></fw-embed-feed>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; padding: 12px 16px; background: #e8f4f8; border-radius: 6px; font-size: 13px; color: #1a6b7a; line-height: 1.5;">
+                        This page filter is fixed in the code. It always looks for videos tagged with
+                        <strong>he + tv + bravia-3 + setup</strong>. You control which videos appear by
+                        managing their hashtags in Firework.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCENARIO: Different products -->
+    <!-- ============================================ -->
+    <div id="s-products" class="scenario-view">
+        <div class="section-intro">
+            <h2>Each product shows its own videos automatically</h2>
+            <p>When a customer registers a product, the Thank You page automatically filters by that product's hashtags. Select a product below to see how the content changes.</p>
+        </div>
+
+        <div class="split">
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-fw">Firework Dashboard</span>
+                    <span class="panel-label">How it works</span>
+                </div>
+                <div class="panel-content">
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">1</span>
+                            <span class="step-title">Each product maps to hashtags</span>
+                        </div>
+                        <div class="step-text">The mapping is built into the page. When a customer registers a BRAVIA 3, the page filters by "he + tv + bravia-3". When they register a WH-1000XM6, it filters by "pe + headphone + wh-1000xm6".</div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">2</span>
+                            <span class="step-title">Select a product to preview</span>
+                        </div>
+                        <select class="product-select" id="prod-select" onchange="switchProduct()">
+                            <option value="he,tv,bravia-3" data-name="BRAVIA 3 TV">BRAVIA 3 TV</option>
+                            <option value="he,tv,bravia-9" data-name="BRAVIA 9 TV">BRAVIA 9 TV</option>
+                            <option value="he,soundbar,bravia-theater" data-name="BRAVIA Theater">BRAVIA Theater Soundbar</option>
+                            <option value="pe,headphone,wh-1000xm5" data-name="WH-1000XM5">WH-1000XM5 Headphones</option>
+                            <option value="pe,headphone,wh-1000xm6" data-name="WH-1000XM6">WH-1000XM6 Headphones</option>
+                            <option value="pe,headphone,linkbuds-clip" data-name="LinkBuds Clip">LinkBuds Clip</option>
+                            <option value="pe,speaker,ult-field" data-name="ULT FIELD">ULT FIELD Speaker</option>
+                            <option value="is,camera,zv-e10-ii" data-name="ZV-E10 II">ZV-E10 II Camera</option>
+                            <option value="is,camera,alpha-7-v" data-name="Alpha 7 V">Alpha 7 V Camera</option>
+                            <option value="pe,gaming,inzone" data-name="INZONE">INZONE Gaming Headset</option>
+                        </select>
+
+                        <div class="tags" id="prod-tags"></div>
+
+                        <div class="expr">
+                            <div class="expr-label">Page filter for this product</div>
+                            <div class="expr-code" id="prod-expr">(and he tv bravia-3 setup)</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">3</span>
+                            <span class="step-title">Your only job: keep videos tagged correctly</span>
+                        </div>
+                        <div class="step-text">As long as videos have the right hashtags in Firework, the right content appears for each product. The pages handle the rest.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-page">Live Page</span>
+                    <span class="panel-label">Thank You page</span>
+                </div>
+                <div class="panel-content">
+                    <div class="mock">
+                        <div class="mock-top">
+                            <h3>Registration successful!</h3>
+                            <p id="prod-name">Thank you for registering your BRAVIA 3 TV</p>
+                        </div>
+                        <div class="mock-body">
+                            <div class="mock-btns">
+                                <button class="mock-btn mock-btn-dark">Print</button>
+                                <button class="mock-btn">Add product</button>
+                                <button class="mock-btn">Review</button>
+                            </div>
+                            <div class="embed-label">Setup video for this product</div>
+                            <fw-storyblock id="prod-hero" channel="sony_electronics_us" hashtag="(and he tv bravia-3 setup)" max_videos="1"></fw-storyblock>
+                            <div style="margin-top: 20px;">
+                                <div class="embed-label">More videos for this product</div>
+                                <fw-embed-feed id="prod-feed" channel="sony_electronics_us" mode="carousel" hashtag="(and he tv bravia-3)" max_videos="6"></fw-embed-feed>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCENARIO: Add new video -->
+    <!-- ============================================ -->
+    <div id="s-newvideo" class="scenario-view">
+        <div class="section-intro">
+            <h2>Add a brand new video</h2>
+            <p>Sony uploads a new video. Here is how it flows to the right pages automatically.</p>
+        </div>
+
+        <div class="split">
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-fw">Firework Dashboard</span>
+                    <span class="panel-label">What you do</span>
+                </div>
+                <div class="panel-content">
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">1</span>
+                            <span class="step-title">Upload the video to Firework</span>
+                        </div>
+                        <div class="step-text">Upload through the dashboard, or we can import it in bulk via the API.</div>
+                        <div class="screenshot">
+                            <img src="fw-library.png" alt="Firework library">
+                            <div class="screenshot-caption">Library > Add Videos to upload new content.</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">2</span>
+                            <span class="step-title">Add the correct hashtags</span>
+                        </div>
+                        <div class="step-text">Tag the video with the right hashtags. For example, a new BRAVIA 9 setup guide:</div>
+                        <div class="tags">
+                            <span class="tag tag-on">he</span>
+                            <span class="tag tag-on">tv</span>
+                            <span class="tag tag-on">bravia-9</span>
+                            <span class="tag tag-on">video</span>
+                            <span class="tag tag-on">setup</span>
+                            <span class="tag tag-on">product-overview</span>
+                            <span class="tag tag-on">rsi-extended</span>
+                            <span class="tag tag-on">2026</span>
+                        </div>
+                        <div class="screenshot">
+                            <img src="fw-edit-hashtags.png" alt="Adding hashtags">
+                            <div class="screenshot-caption">Edit Content > Hashtags. Type the tag name and press enter.</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">3</span>
+                            <span class="step-title">Save. The video appears automatically.</span>
+                        </div>
+                        <div class="step-text">No code changes. No page updates. The video shows up on every page whose filter matches its hashtags:</div>
+                        <div style="font-size: 13px; line-height: 2; padding-left: 36px; color: #444;">
+                            <div>Thank You page for BRAVIA 9 registrations</div>
+                            <div>Video Hub under TV, Setup, and All Videos</div>
+                            <div>Product Locker for BRAVIA 9 owners</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 12px 16px; background: #e8f4f8; border-radius: 6px; font-size: 13px; color: #1a6b7a; line-height: 1.5; margin-top: 16px;">
+                        Sony produces around 2-3 new videos per month. Each one just needs the right hashtags and it flows to all the right pages automatically.
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-page">Live Pages</span>
+                    <span class="panel-label">Where the new video appears</span>
+                </div>
+                <div class="panel-content">
+                    <div class="embed-label">Thank You page: BRAVIA 9 setup</div>
+                    <fw-storyblock channel="sony_electronics_us" hashtag="(and he tv bravia-9 setup)" max_videos="1"></fw-storyblock>
+
+                    <div style="margin-top: 24px;">
+                        <div class="embed-label">Video Hub: All TV videos</div>
+                        <fw-embed-feed channel="sony_electronics_us" mode="carousel" hashtag="(and he tv)" max_videos="6"></fw-embed-feed>
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <div class="embed-label">Product Locker: BRAVIA 9 content</div>
+                        <fw-embed-feed channel="sony_electronics_us" mode="player_deck" hashtag="(and he tv bravia-9)" max_videos="4"></fw-embed-feed>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCENARIO: Video Hub -->
+    <!-- ============================================ -->
+    <div id="s-videohub" class="scenario-view">
+        <div class="section-intro">
+            <h2>How Video Hub sections work</h2>
+            <p>Each section of the Video Hub has a fixed hashtag filter. Videos matching that filter appear automatically. Try building different filters below to see how it works.</p>
+        </div>
+
+        <div class="split">
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-fw">Firework Dashboard</span>
+                    <span class="panel-label">How sections are defined</span>
+                </div>
+                <div class="panel-content">
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">1</span>
+                            <span class="step-title">Each section filters by hashtags</span>
+                        </div>
+                        <div class="step-text">The "TV Setup" section filters by "he + tv + setup". The "All Headphones" section filters by "pe + headphone". A video appears in a section when its hashtags match.</div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">2</span>
+                            <span class="step-title">Try a filter combination</span>
+                        </div>
+                        <div class="step-text">Click tags below to build a filter and see the results on the right:</div>
+
+                        <div style="margin-left: 36px;">
+                            <div style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">Category</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;" id="vh-cat">
+                                <span class="tag tag-on" data-tag="pe" onclick="toggleVH(this)" style="cursor:pointer;">pe</span>
+                                <span class="tag tag-on" data-tag="he" onclick="toggleVH(this)" style="cursor:pointer;">he</span>
+                                <span class="tag tag-on" data-tag="is" onclick="toggleVH(this)" style="cursor:pointer;">is</span>
+                            </div>
+
+                            <div style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">Sub Category</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;" id="vh-sub">
+                                <span class="tag tag-on" data-tag="tv" onclick="toggleVH(this)" style="cursor:pointer;">tv</span>
+                                <span class="tag tag-on" data-tag="headphone" onclick="toggleVH(this)" style="cursor:pointer;">headphone</span>
+                                <span class="tag tag-on" data-tag="soundbar" onclick="toggleVH(this)" style="cursor:pointer;">soundbar</span>
+                                <span class="tag tag-on" data-tag="camera" onclick="toggleVH(this)" style="cursor:pointer;">camera</span>
+                                <span class="tag tag-on" data-tag="speaker" onclick="toggleVH(this)" style="cursor:pointer;">speaker</span>
+                                <span class="tag tag-on" data-tag="gaming" onclick="toggleVH(this)" style="cursor:pointer;">gaming</span>
+                            </div>
+
+                            <div style="margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase;">Content Type</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;" id="vh-type">
+                                <span class="tag tag-on" data-tag="setup" onclick="toggleVH(this)" style="cursor:pointer;">setup</span>
+                                <span class="tag tag-on" data-tag="tutorial" onclick="toggleVH(this)" style="cursor:pointer;">tutorial</span>
+                                <span class="tag tag-on" data-tag="tips" onclick="toggleVH(this)" style="cursor:pointer;">tips</span>
+                                <span class="tag tag-on" data-tag="feature" onclick="toggleVH(this)" style="cursor:pointer;">feature</span>
+                                <span class="tag tag-on" data-tag="review" onclick="toggleVH(this)" style="cursor:pointer;">review</span>
+                                <span class="tag tag-on" data-tag="short" onclick="toggleVH(this)" style="cursor:pointer;">short</span>
+                                <span class="tag tag-on" data-tag="video" onclick="toggleVH(this)" style="cursor:pointer;">video</span>
+                            </div>
+                        </div>
+
+                        <div class="expr" style="margin-left: 36px;">
+                            <div class="expr-label">Section filter</div>
+                            <div class="expr-code" id="vh-expr">Click a tag to start</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-head">
+                            <span class="step-num">3</span>
+                            <span class="step-title">To add/remove videos from a section</span>
+                        </div>
+                        <div class="step-text">Go to the video in Firework and add or remove the matching hashtags. The section updates automatically.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="badge badge-page">Live Page</span>
+                    <span class="panel-label">Video Hub result</span>
+                </div>
+                <div class="panel-content">
+                    <div class="embed-label">Videos matching your filter</div>
+                    <fw-embed-feed id="vh-grid" channel="sony_electronics_us" mode="grid" max_videos="8"></fw-embed-feed>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key takeaways -->
+    <div class="takeaways">
+        <h2>Key takeaways</h2>
+        <p>After launch, you manage all video content from the Firework dashboard. The pages never need code changes.</p>
+        <p>Each page has a fixed hashtag filter built into the code. You control which videos appear by managing their hashtags in Firework.</p>
+        <p>To add new content, upload the video and tag it correctly. It flows to all matching pages automatically.</p>
+        <p>Hashtags can be updated individually or in bulk at any time.</p>
+    </div>
+</div>
+
+<div class="footer">SPR Video Library - Content Management Demo (v7) | For internal review only</div>
+
+<!-- Firework SDK -->
+<script async type="module" src="https://asset.fwcdn3.com/js/module/fwn.js?business_id=gkk1XQ"></script>
+<script async nomodule src="https://asset.fwcdn3.com/js/fwn.js?business_id=gkk1XQ"></script>
+
+<script>
+// Scenario switching
+function showScenario(id, btn) {
+    document.querySelectorAll('.scenario-view').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.scenario-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('s-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+function buildExpr(tags) {
+    if (tags.length === 0) return '';
+    if (tags.length === 1) return tags[0];
+    return '(and ' + tags.join(' ') + ')';
+}
+
+// Product switching
+function switchProduct() {
+    var sel = document.getElementById('prod-select');
+    var tags = sel.value.split(',');
+    var name = sel.options[sel.selectedIndex].dataset.name;
+    var setupExpr = buildExpr(tags.concat(['setup']));
+    var allExpr = buildExpr(tags);
+
+    document.getElementById('prod-hero').setAttribute('hashtag', setupExpr);
+    document.getElementById('prod-feed').setAttribute('hashtag', allExpr);
+    document.getElementById('prod-expr').textContent = setupExpr;
+    document.getElementById('prod-name').textContent = 'Thank you for registering your ' + name;
+
+    var tagArea = document.getElementById('prod-tags');
+    tagArea.innerHTML = '';
+    tags.concat(['setup']).forEach(function(t) {
+        var span = document.createElement('span');
+        span.className = 'tag tag-on';
+        span.textContent = t;
+        tagArea.appendChild(span);
+    });
+}
+switchProduct();
+
+// Video Hub interactive filter
+var vhActive = {};
+function toggleVH(chip) {
+    var tag = chip.dataset.tag;
+    if (vhActive[tag]) {
+        delete vhActive[tag];
+        chip.classList.remove('tag-new');
+        chip.classList.add('tag-on');
+    } else {
+        vhActive[tag] = true;
+        chip.classList.remove('tag-on');
+        chip.classList.add('tag-new');
+    }
+    var tags = Object.keys(vhActive);
+    var expr = buildExpr(tags);
+    document.getElementById('vh-expr').textContent = expr || 'Click a tag to start';
+    var grid = document.getElementById('vh-grid');
+    if (expr) {
+        grid.setAttribute('hashtag', expr);
+    } else {
+        grid.removeAttribute('hashtag');
+    }
+}
+</script>
+
+</body>
+</html>
